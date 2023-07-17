@@ -10,6 +10,8 @@ class Pesanan implements EntityInterface
 
     private string $nomorPesanan;
 
+    private int $nomorIterasiPesanan;
+
     private string $namaPesanan;
 
     private DateTimeInterface $tanggalPemesanan;
@@ -144,11 +146,29 @@ class Pesanan implements EntityInterface
         return $this->listPesanan;
     }
 
+    /**
+     * @return int
+     */
+    public function getNomorIterasiPesanan(): int
+    {
+        return $this->nomorIterasiPesanan;
+    }
+
+    /**
+     * @param int $nomorIterasiPesanan
+     */
+    public function setNomorIterasiPesanan(int $nomorIterasiPesanan): void
+    {
+        $this->nomorIterasiPesanan = $nomorIterasiPesanan;
+    }
+
+
     public function toArray(): array
     {
         return [
             'id' => $this->getId(),
             'nomor_pesanan' => $this->getNomorPesanan(),
+            'nomor_iterasi_pesanan' => $this->getNomorIterasiPesanan(),
             'nama_pesanan' => $this->getNamaPesanan(),
             'alamat_pengiriman' => $this->getAlamatPengiriman(),
             'tanggal_pemesanan' => $this->getTanggalPemesanan()->format('Y-m-d H:i:s'),
