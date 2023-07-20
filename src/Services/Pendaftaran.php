@@ -5,7 +5,7 @@ require_once __DIR__ . '/../Repositories/PelangganRepository.php';
 require_once __DIR__ . '/../Entities/Akun.php';
 require_once __DIR__ . '/../Entities/Pelanggan.php';
 
-class PendaftaranService
+class Pendaftaran
 {
     private AkunRepository $akunRepository;
 
