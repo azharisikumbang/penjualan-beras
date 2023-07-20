@@ -8,6 +8,24 @@ class AkunRepository extends BaseRepository
 {
     private string $table = 'akun';
 
+    public function existsByUsername(string $username) : bool
+    {
+        $query = "SELECT EXISTS(SELECT id FROM {$this->getTable()} WHERE username = :username) as 'exists'";
+
+        return $this->existsBy($query, ['username' => $username]);
+    }
+
+    public function save(Akun $entity): false|Akun
+    {
+        $attributes = [
+            'username' => $entity->getUsername(),
+            'password' => $entity->getPassword(),
+            'role' => $entity->getRole()->value
+        ];
+
+        return $this->basicSave($entity, $attributes);
+    }
+
     protected function getTable(): string
     {
         return $this->table;
@@ -24,14 +42,4 @@ class AkunRepository extends BaseRepository
         return $akun;
     }
 
-    public function save(Akun $entity): false|Akun
-    {
-        $attributes = [
-            'username' => $entity->getUsername(),
-            'password' => $entity->getPassword(),
-            'role' => $entity->getRole()->value
-        ];
-
-        return $this->basicSave($entity, $attributes);
-    }
 }
