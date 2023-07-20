@@ -103,7 +103,7 @@ class Karyawan implements EntityInterface
             'nama' => $this->getNama(),
             'kontak' => $this->getKontak(),
             'jabatan' => $this->getJabatan()->value,
-            'akun' => $this->getAkun()->toArray()
+            'akun' => $this->getAkun()?->toArray()
         );
     }
 }

@@ -57,4 +57,15 @@ class KaryawanRepository extends BaseRepository
 
         return $keryawan;
     }
+
+    public function save(Karyawan $entity): false|Karyawan
+    {
+        $attributes = [
+            'nama' => $entity->getNama(),
+            'kontak' => $entity->getKontak(),
+            'jabatan' => $entity->getJabatan()->value
+        ];
+
+        return $this->basicSave($entity, $attributes);
+    }
 }
