@@ -53,8 +53,10 @@ class Akun implements EntityInterface
     /**
      * @param string $password
      */
-    public function setPassword(string $password): void
+    public function setPassword(string $password, bool $hashed = true): void
     {
+        if (!$hashed) $password = password_hash($password, PASSWORD_DEFAULT);
+
         $this->password = $password;
     }
 
