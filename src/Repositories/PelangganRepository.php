@@ -57,4 +57,16 @@ class PelangganRepository extends BaseRepository
 
         return $pelanggan;
     }
+
+    public function save(Pelanggan $entity) : false|Pelanggan
+    {
+        $attributes = [
+            'nama' => $entity->getNama(),
+            'kontak' => $entity->getKontak(),
+            'alamat' => $entity->getAlamat(),
+            'akun_id' => $entity->getAkun()->getId()
+        ];
+
+        return $this->basicSave($entity, $attributes);
+    }
 }
