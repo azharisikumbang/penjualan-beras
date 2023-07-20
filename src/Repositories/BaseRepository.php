@@ -1,27 +1,24 @@
 <?php
 
 require_once __DIR__ . '/../Contract/RepositoryInterface.php';
-require_once __DIR__ . '/../Contract/EntityInterface.php';
 
 abstract class BaseRepository
 {
     public function __construct(private ?PDO $db = null) {}
 
-    protected function getDatabaseConnection() : ?PDO
+    public function getDatabaseConnection() : ?PDO
     {
         // TODO: Implement database connection
          return $this->db ?? app()->getManager()->getDatabaseManager()->getInstance();
     }
 
-    protected function basicFindById(int $id, string $select = "*"): ?EntityInterface
+    public function findById(int $id): ?EntityInterface
     {
-        $stmt = $this->getDatabaseConnection()->prepare("SELECT {$select} from {$this->getTable()} WHERE id = :id");
-        $stmt->execute(['id' => $id]);
-
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt = $this->getDatabaseConnection()->prepare("SELECT * from {$this->getTable()} WHERE id = :id");
+        return $stmt->execute(['id' => $id]) ? $this->toEntity($stmt->fetch(PDO::FETCH_ASSOC)) : null;
     }
 
-    protected function basicGet(int $length = 10, int $start = 0, string $order = 'id', string $by = 'DESC'): array
+    public function get(int $length = 10, int $start = 0, string $order = 'id', string $by = 'DESC'): array
     {
         $query = "SELECT * FROM {$this->getTable()} ORDER BY {$order} {$by} LIMIT {$start}, {$length}";
 
@@ -34,7 +31,7 @@ abstract class BaseRepository
         return $result;
     }
 
-    protected function basicCreate(array $bind): false|EntityInterface
+    public function create(array $bind): false|EntityInterface
     {
         $bindKeys = [];
         foreach ($bind as $attr => $value) $bindKeys[] = ":" . $attr;
@@ -49,9 +46,9 @@ abstract class BaseRepository
         return $query->execute($bind) ? $this->getDatabaseConnection()->lastInsertId() : false;
     }
 
-    protected function basicUpdate(int|EntityInterface $entity, array $attributes): bool
+    public function update(int|EntityInterface $entity, array $attributes): bool
     {
-        if (false === $this->basicExists($entity)) return false;
+        if (false === $this->exists($entity)) return false;
 
         $bindKeys = [];
         foreach ($attributes as $attr => $value) $bindKeys[] = $attr . " = :" . $attr;
@@ -68,7 +65,7 @@ abstract class BaseRepository
 
     }
 
-    protected function basicDelete(int|EntityInterface $entity): bool
+    public function remove(int|EntityInterface $entity): bool
     {
         $query = "DELETE FROM {$this->getTable()} WHERE id = :id";
 
@@ -76,19 +73,32 @@ abstract class BaseRepository
         return $stmt->execute(['id' => is_int($entity) ? $entity: $entity->getId()]);
     }
 
-    protected function basicExists(int|EntityInterface $entity): bool
+    public function exists(int|EntityInterface $entity): bool
     {
         $query = "SELECT EXISTS(SELECT id FROM {$this->getTable()} WHERE id = :id) as 'exists'";
 
-        return $this->basicExistsBy($query, ['id' => is_int($entity) ? $entity : $entity->getId() ]);
+        return $this->existsBy($query, ['id' => is_int($entity) ? $entity : $entity->getId() ]);
     }
 
-    protected function basicExistsBy(string $query, array $bind): bool
+    public function existsBy(string $query, array $bind): bool
     {
         $stmt = $this->getDatabaseConnection()->prepare($query);
         $stmt->execute($bind);
 
         return (bool) $stmt->fetch(PDO::FETCH_ASSOC)['exists'];
+    }
+
+    public function findBy(string $column, mixed $value, string $agg = "="): ?EntityInterface
+    {
+        $stmt = $this->getDatabaseConnection()->prepare("SELECT * from {$this->getTable()} WHERE {$column} {$agg} :{$column}");
+        return $stmt->execute([$column => $value]) ? $this->toEntity($stmt->fetch(PDO::FETCH_ASSOC)) : null;
+    }
+
+    protected function basicSave(EntityInterface $entity, array $attributes = []): false|EntityInterface
+    {
+        if($this->exists($entity)) return $this->update($entity, $attributes);
+
+        return $this->create($attributes);
     }
 
     abstract protected function getTable(): string;
