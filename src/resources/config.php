@@ -2,10 +2,10 @@
 
 return [
     'app' => [
-        'site_title' => 'PT. Sorek Wisata Transport',
+        'site_title' => 'BUMDUS KANTERLEANS',
         'base_dir' => __DIR__ . '/../../',
-        'site_url' => 'http://localhost/travel-app/public/',
-        'base_url' => 'http://localhost/travel-app/',
+        'site_url' => 'http://localhost/penjualan-beras/public/',
+        'base_url' => 'http://localhost/penjualan-beras',
     ],
     'database' => [
         'host' => 'localhost',

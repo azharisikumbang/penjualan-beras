@@ -18,7 +18,7 @@ $manager->setRequestManager(new Request($_REQUEST));
 $manager->setResponseManager(new Response());
 
 $app = new App($manager);
-$app->addConfigFor('app', $appConfiguration);
+$app->addConfigFor('app', $appConfiguration['app']);
 $app->setEnvironment('development');
 $app->setTimeZone('Asia/Jakarta');
 $app->loadFunction('functions', fn ($file) => require_once $file);
