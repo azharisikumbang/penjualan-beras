@@ -6,7 +6,7 @@ require_once __DIR__ . '/DetailPesanan.php';
 
 class Pesanan implements EntityInterface
 {
-    private int $id;
+    private ?int $id;
 
     private string $nomorPesanan;
 
@@ -24,10 +24,12 @@ class Pesanan implements EntityInterface
 
     private array $listPesanan = [];
 
+    private ?Transaksi $transaksi = null;
+
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -162,6 +164,21 @@ class Pesanan implements EntityInterface
         $this->nomorIterasiPesanan = $nomorIterasiPesanan;
     }
 
+    /**
+     * @return Transaksi
+     */
+    public function getTransaksi(): ?Transaksi
+    {
+        return $this->transaksi;
+    }
+
+    /**
+     * @param null|Transaksi $transaksi
+     */
+    public function setTransaksi(?Transaksi $transaksi): void
+    {
+        $this->transaksi = $transaksi;
+    }
 
     public function toArray(): array
     {
@@ -174,7 +191,8 @@ class Pesanan implements EntityInterface
             'tanggal_pemesanan' => $this->getTanggalPemesanan()->format('Y-m-d H:i:s'),
             'total_tagihan' => $this->getTotalTagihan(),
             'pemesan' => $this->getPemesan()->toArray(),
-            'list_pesanan' => array_map(fn ($item) => $item->toArray(), $this->getListPesanan())
+            'list_pesanan' => array_map(fn ($item) => $item->toArray(), $this->getListPesanan()),
+            'transaksi' => $this->getTransaksi()?->toArray()
         ];
     }
 }

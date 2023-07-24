@@ -6,7 +6,7 @@ require_once __DIR__ . '/Akun.php';
 
 class Pelanggan implements EntityInterface
 {
-    private int $id;
+    private ?int $id = null;
 
     private string $nama;
 
@@ -19,7 +19,7 @@ class Pelanggan implements EntityInterface
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

@@ -7,28 +7,26 @@ require_once __DIR__ . '/../Enum/StatusPembayaran.php';
 
 class Transaksi implements EntityInterface
 {
-    private int $id;
+    private ?int $id;
 
-    private DateTimeInterface $tanggalPembayaran;
+    private ?DateTimeInterface $tanggalPembayaran;
 
-    private string $namaPembayaran;
+    private ?string $namaPembayaran;
 
-    private string $bankPembayaran;
+    private ?string $bankPembayaran;
 
     private float $nominalDibayarkan;
 
-    private string $fileBuktiPembayaran;
+    private ?string $fileBuktiPembayaran;
 
     private KonfirmasiPembayaran $konfirmasiPembayaran;
 
     private StatusPembayaran $statusPembayaran;
 
-    private Pesanan $pesanan;
-
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -42,17 +40,17 @@ class Transaksi implements EntityInterface
     }
 
     /**
-     * @return DateTimeInterface
+     * @return ?DateTimeInterface
      */
-    public function getTanggalPembayaran(): DateTimeInterface
+    public function getTanggalPembayaran(): ?DateTimeInterface
     {
         return $this->tanggalPembayaran;
     }
 
     /**
-     * @param DateTimeInterface $tanggalPembayaran
+     * @param ?DateTimeInterface $tanggalPembayaran
      */
-    public function setTanggalPembayaran(DateTimeInterface $tanggalPembayaran): void
+    public function setTanggalPembayaran(?DateTimeInterface $tanggalPembayaran): void
     {
         $this->tanggalPembayaran = $tanggalPembayaran;
     }
@@ -153,22 +151,6 @@ class Transaksi implements EntityInterface
         $this->statusPembayaran = $statusPembayaran;
     }
 
-    /**
-     * @return Pesanan
-     */
-    public function getPesanan(): Pesanan
-    {
-        return $this->pesanan;
-    }
-
-    /**
-     * @param Pesanan $pesanan
-     */
-    public function setPesanan(Pesanan $pesanan): void
-    {
-        $this->pesanan = $pesanan;
-    }
-
     public function toArray(): array
     {
         return [
@@ -179,8 +161,21 @@ class Transaksi implements EntityInterface
             'nominal_dibayarkan' => $this->getNominalDibayarkan(),
             'status_pembayaran' => $this->getStatusPembayaran()->value,
             'konfirmasi_pembayaran' => $this->getKonfirmasiPembayaran()->value,
-            'file_bukti_pembayaran' => $this->getFileBuktiPembayaran(),
-            'pesanan' => $this->getPesanan()->toArray()
+            'file_bukti_pembayaran' => $this->getFileBuktiPembayaran()
         ];
+    }
+
+    public static function makeEmpty()
+    {
+        $transaksi = new Transaksi();
+        $transaksi->setStatusPembayaran(StatusPembayaran::BELUM_BAYAR);
+        $transaksi->setKonfirmasiPembayaran(KonfirmasiPembayaran::BELUM_BAYAR);
+        $transaksi->setFileBuktiPembayaran(null);
+        $transaksi->setNominalDibayarkan(0);
+        $transaksi->setTanggalPembayaran(null);
+        $transaksi->setNamaPembayaran(null);
+        $transaksi->setBankPembayaran(null);
+
+        return $transaksi;
     }
 }

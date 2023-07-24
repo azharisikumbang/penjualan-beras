@@ -5,7 +5,7 @@ require_once __DIR__ . '/../Contract/EntityInterface.php';
 class Beras implements EntityInterface
 {
 
-    private int $id;
+    private ?int $id;
 
     private string $jenis;
 
@@ -14,9 +14,9 @@ class Beras implements EntityInterface
     private int $stok;
 
 
-    public function getId(): int
+    public function getId(): ?int
     {
-        return $this->id;
+        return $this->id ?? null;
     }
 
     /**

@@ -5,7 +5,7 @@ require_once __DIR__ . '/Pesanan.php';
 
 class DetailPesanan implements EntityInterface
 {
-    private int $id;
+    private ?int $id = null;
 
     private string $jenisBeras;
 
@@ -18,7 +18,7 @@ class DetailPesanan implements EntityInterface
     /**
      * @return int
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

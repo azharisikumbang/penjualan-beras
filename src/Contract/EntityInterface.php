@@ -2,7 +2,7 @@
 
 interface EntityInterface
 {
-    public function getId(): int;
+    public function getId(): int|null;
 
     public function toArray(): array;
 }
