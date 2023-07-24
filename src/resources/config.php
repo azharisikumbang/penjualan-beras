@@ -11,7 +11,8 @@ return [
         'host' => 'localhost',
         'username' => 'root',
         'password' => '',
-        'database' => 'bumdus_kanterleans'
+        'database' => 'bumdus_kanterleans',
+        'port' => 3306
     ],
     'disk' => []
 ];
