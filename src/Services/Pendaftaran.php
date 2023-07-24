@@ -26,7 +26,7 @@ class Pendaftaran
     ): false|Pelanggan {
         if ($this->cekApakahUsernameTerdaftar($username)) return false;
 
-        $hashedPassword = password_verify($password, PASSWORD_DEFAULT);
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $akun = new Akun();
         $akun->setUsername($username);
         $akun->setPassword($hashedPassword);

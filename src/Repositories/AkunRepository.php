@@ -43,7 +43,7 @@ class AkunRepository extends BaseRepository
         $akun->setId($rows['id']);
         $akun->setUsername($rows['username']);
         $akun->setPassword($rows['password']);
-        $akun->setRole(Role::from($rows['role']));
+        $akun->setRole(Role::from(strtolower($rows['role'])));
 
         return $akun;
     }

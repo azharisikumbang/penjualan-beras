@@ -5,7 +5,7 @@ require_once __DIR__ . '/../Enum/Role.php';
 
 class Akun implements EntityInterface
 {
-    private int $id;
+    private ?int $id;
 
     private string $username;
 
@@ -13,9 +13,9 @@ class Akun implements EntityInterface
 
     private Role $role;
 
-    public function getId(): int
+    public function getId(): ?int
     {
-        return $this->id;
+        return $this->id ?? null;
     }
 
     /**

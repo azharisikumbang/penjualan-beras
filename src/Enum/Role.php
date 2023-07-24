@@ -19,4 +19,14 @@ enum Role : string
             default => 'public'
         };
     }
+
+    public function redirectPage()
+    {
+        return match ($this) {
+            Role::KARYAWAN => 'karyawan',
+            Role::PELANGGAN => 'pelanggan',
+            Role::ADMIN => 'admin',
+            default => 'public'
+        };
+    }
 }

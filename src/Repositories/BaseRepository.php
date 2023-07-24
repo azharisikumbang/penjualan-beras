@@ -6,7 +6,7 @@ abstract class BaseRepository
 {
     public function __construct(private ?PDO $db = null) {}
 
-    public function getDatabaseConnection() : ?PDO
+    protected function getDatabaseConnection() : ?PDO
     {
         // TODO: Implement database connection
          return $this->db ?? app()->getManager()->getDatabaseManager()->getInstance();
@@ -31,7 +31,7 @@ abstract class BaseRepository
         return $result;
     }
 
-    public function create(array $bind): false|EntityInterface
+    public function create(array $bind): false|string
     {
         $bindKeys = [];
         foreach ($bind as $attr => $value) $bindKeys[] = ":" . $attr;
@@ -75,6 +75,13 @@ abstract class BaseRepository
 
     public function exists(int|EntityInterface $entity): bool
     {
+        if($entity instanceof $entity) {
+            if(is_null($entity->getId())) return false;
+
+            $id = $entity->getId();
+        }
+
+
         $query = "SELECT EXISTS(SELECT id FROM {$this->getTable()} WHERE id = :id) as 'exists'";
 
         return $this->existsBy($query, ['id' => is_int($entity) ? $entity : $entity->getId() ]);
@@ -90,15 +97,23 @@ abstract class BaseRepository
 
     public function findBy(string $column, mixed $value, string $agg = "="): ?EntityInterface
     {
-        $stmt = $this->getDatabaseConnection()->prepare("SELECT * from {$this->getTable()} WHERE {$column} {$agg} :{$column}");
-        return $stmt->execute([$column => $value]) ? $this->toEntity($stmt->fetch(PDO::FETCH_ASSOC)) : null;
+        $query = "SELECT * from {$this->getTable()} WHERE {$column} {$agg} :{$column}";
+        $stmt = $this->getDatabaseConnection()->prepare($query);
+        $stmt->execute([$column => $value]);
+
+        return $stmt->rowCount() ? $this->toEntity($stmt->fetch(PDO::FETCH_ASSOC)) : null;
     }
 
     protected function basicSave(EntityInterface $entity, array $attributes = []): false|EntityInterface
     {
         if($this->exists($entity)) return $this->update($entity, $attributes);
 
-        return $this->create($attributes);
+        $insertedId = $this->create($attributes);
+        if(!$insertedId) return false;
+
+        $entity->setId((int) $insertedId);
+
+        return $entity;
     }
 
     abstract protected function getTable(): string;
