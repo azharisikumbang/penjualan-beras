@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../Contract/RepositoryInterface.php';
+require_once __DIR__ . '/../Contract/EntityInterface.php';
 require_once __DIR__ . '/BaseRepository.php';
 require_once __DIR__ . '/../Entities/Akun.php';
 
@@ -13,6 +14,11 @@ class AkunRepository extends BaseRepository
         $query = "SELECT EXISTS(SELECT id FROM {$this->getTable()} WHERE username = :username) as 'exists'";
 
         return $this->existsBy($query, ['username' => $username]);
+    }
+
+    public function findByUsername(string $username): ?Akun
+    {
+        return $this->findBy('username', $username);
     }
 
     public function save(Akun $entity): false|Akun
