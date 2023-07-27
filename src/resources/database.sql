@@ -73,6 +73,9 @@ CREATE TABLE transaksi(
     FOREIGN KEY (pesanan_id) REFERENCES pesanan(id) ON DELETE CASCADE
 );
 
+/* insert admin user */
+INSERT INTO akun (username, password, role) VALUES ('admin', '$2y$10$F09VT7vnzeFqoTuQAj3CoOhJg4wq96bJy1Ah1ltQplyHAus8vJGJO', 'ADMIN');
+
 
 
 
