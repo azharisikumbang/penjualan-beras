@@ -3,14 +3,13 @@
 require_once __DIR__ . '/../Repositories/KaryawanRepository.php';
 require_once __DIR__ . '/../Entities/Karyawan.php';
 
-class KelolaDataKaryawan
+class KelolaKaryawan
 {
     private KaryawanRepository $karyawanRepository;
 
     public function __construct()
     {
         $this->karyawanRepository = new KaryawanRepository();
-        $this->akunRepository = new AkunRepository();
     }
 
     public function tambahkanDataKaryawan(
@@ -37,9 +36,13 @@ class KelolaDataKaryawan
 
         $updated = [];
         if ($nama) $updated['nama'] = $nama;
-        if($kontak) $updated['kontak'] = $kontak;
+        if ($kontak) $updated['kontak'] = $kontak;
+        if(empty($updated)) return false;
 
-        return $this->karyawanRepository->update($karyawan, $updated);
+        $updated = $this->karyawanRepository->update($karyawan, $updated);
+        if(false === $updated) return false;
+
+        return $this->karyawanRepository->findById($karyawan->getId());
     }
 
     public function hapusDataKaryawan(int $id): bool
@@ -50,5 +53,10 @@ class KelolaDataKaryawan
     public function listKaryawan(int $total = 10, int $start = 0): array
     {
         return $this->karyawanRepository->get($total, $start, 'nama', 'ASC');
+    }
+
+    public function listJabatanKaryawan()
+    {
+        return Jabatan::cases();
     }
 }
