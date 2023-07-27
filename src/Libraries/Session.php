@@ -57,7 +57,7 @@ class Session implements SessionInterface
     public function isAuthenticatedAs(string|Role $role): bool
     {
         $auth = $this->auth();
-        $role = is_string($role) ? Role::tryFrom($role) : $role;
+        $role = is_string($role) ? Role::tryFrom(strtolower($role)) : $role;
 
         return $auth && $auth->getRole()->value == $role->value;
     }
