@@ -25,7 +25,7 @@ class KelolaBeras
         return $this->berasRepository->save($beras);
     }
 
-    public function perbaharuiDataBeras(int $id, ?string $jenis = null, null|int|float $harga = null, ?int $stok): false|Beras
+    public function perbaharuiDataBeras(int $id, ?string $jenis = null, null|int|float $harga = null, ?int $stok = null): false|Beras
     {
         $beras = $this->berasRepository->findById($id);
         if (is_null($beras))  return false;
@@ -38,13 +38,17 @@ class KelolaBeras
             $updatable['harga'] = $harga;
         }
 
-        if($stok) {
+        if(!is_null($stok)) {
             if ($stok < 0) return false;
 
             $updatable['stok'] = $stok;
         }
 
-        return $this->berasRepository->update($beras, $updatable);
+        $updated = $this->berasRepository->update($beras, $updatable);
+
+        if (false === $updated) return false;
+
+        return $this->berasRepository->findById($beras->getId());
     }
 
     public function hapusDataBeras(int $id): bool
