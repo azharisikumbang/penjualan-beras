@@ -23,7 +23,7 @@ class KelolaKeranjang
         /** @var $keranjang Keranjang */
         $keranjang = $this->get();
 
-        if(is_string($key)) {
+        if(is_string($key) && $key != '') {
             $item = $keranjang->search($key);
             if(is_null($item)) return $keranjang;
 
