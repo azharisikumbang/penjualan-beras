@@ -4,7 +4,7 @@
 TODO: menampilkan seluruh produk (done)
 TODO: mengganti gambar
 TODO: memilih produk dan menampilkan di form input jumlah beli (done)
-TODO: menambahkan item ke keranjang
+TODO: menambahkan item ke keranjang (done)
 TODO: merubah jumlah beli
 TODO: menghapus item dari keranjang
 TODO: validasi jumlah beli tidak boleh lebih dari stok tersedia
@@ -115,11 +115,11 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
                         <template x-for="item in properties.data.list_keranjang.items">
                             <div class="flex justify-between border-b pb-1 mb-2">
                                 <div>
-                                    <p class="text-gray-600"><span x-text="item.detail.jenis"></span>@<span x-text="currencyToRupiah(item.detail.harga)"></span> x <span x-text="addDotToCurrentcy(item.jumlah_beli)"></span></p>
+                                    <p class="text-gray-600"><span x-text="item.detail.jenis"></span>@<span x-text="currencyToRupiah(item.detail.harga)"></span> x <span x-text="addDotToCurrentcy(item.jumlah_beli)"></span>kg</p>
                                     <div class="text-sm text-red-500">
-                                        <a href="" class=" hover:underline">Ubah</a>
+                                        <button @click="editItemKeranjang(item)" type="button" class=" hover:underline">Ubah</button>
                                         -
-                                        <a href="" class=" hover:underline">Hapus</a>
+                                        <button type="button" href="" class=" hover:underline">Hapus</button>
                                     </div>
                                 </div>
                                 <div>
@@ -219,23 +219,35 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
                 this.properties.form.selected.jenis = selected.jenis;
                 this.properties.form.selected.harga = selected.harga;
                 this.properties.form.selected.stok = selected.stok;
+
+                let indexInKeranjang = this.properties.data.list_keranjang.items.findIndex(el => el.detail.id == selected.id);
+                if(indexInKeranjang !== -1) {
+                    this.editItemKeranjang(this.properties.data.list_keranjang.items[indexInKeranjang]);
+
+                    return;
+                }
+
+                console.log(this.properties.data.list_keranjang.items[indexItem]);
+
+                this.properties.form.selected.jumlah_beli = 0;
+                this.countTotal()
             },
             "countTotal": function () {
                 this.properties.form.selected.total = this.properties.form.selected.jumlah_beli * this.properties.form.selected.harga
             },
             "tambahkanKeKeranjang": function () {
-                console.table(this.properties.form.selected);
-                let alpineObj = this;
+                if (this.properties.form.selected.id < 1) return;
 
+                let alpineObj = this;
                 this.postData(
                     '/api/keranjang/add',
                     this.createFormData({
                         'beras': this.properties.form.selected.id,
-                        'jumlah_beli': this.properties.form.selected.jumlah_beli
+                        'jumlah_beli': this.properties.form.selected.jumlah_beli,
+                        'key': this.properties.form.selected.key
                     }),
                     function (response) {
                         alpineObj.properties.data.list_keranjang = response.data.data;
-                        console.log(response);
                     },
                     function (err) {
                         alpineObj.addErrorMassage('bad_request', 'Gagal dalam menyimpan, mohon periksa data dan coba lagi.')
@@ -244,6 +256,16 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
             },
             "loadKeranjang": async function () {
                 this.properties.data.list_keranjang = (await this.getApiRequest('/api/keranjang/list')).data;
+            },
+            "editItemKeranjang": function (item) {
+                this.properties.form.selected.id = item.detail.id;
+                this.properties.form.selected.jenis = item.detail.jenis;
+                this.properties.form.selected.harga = item.detail.harga;
+                this.properties.form.selected.stok = item.detail.stok;
+                this.properties.form.selected.key = item.key;
+
+                this.properties.form.selected.jumlah_beli = item.jumlah_beli;
+                this.countTotal()
             }
         };
 
@@ -348,7 +370,8 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
                             'harga': 0,
                             'stok': 0,
                             'jumlah_beli': 0,
-                            'total': 0
+                            'total': 0,
+                            'key': null
                         }
                     }
                 },

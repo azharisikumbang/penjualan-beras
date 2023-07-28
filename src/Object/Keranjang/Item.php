@@ -74,6 +74,12 @@ class Item
         $this->totalHarga = $totalHarga;
     }
 
+    public function updateTotalHarga()
+    {
+        $total = $this->getBeras()->getHarga() * $this->getJumlahBeli();
+        $this->setTotalHarga($total);
+    }
+
     public static function create(Beras $detail, int $jumlahBeli = 1)
     {
         $item = new Item();

@@ -18,25 +18,28 @@ class KelolaKeranjang
         return new Keranjang();
     }
 
-    public function tambahkanProdukKeKeranjang(int|Beras $beras, int $jumlahBeli): Keranjang
+    public function tambahkanProdukKeKeranjang(?string $key, int|Beras $beras, int $jumlahBeli): Keranjang
     {
+        /** @var $keranjang Keranjang */
         $keranjang = $this->get();
+
+        if(is_string($key)) {
+            $item = $keranjang->search($key);
+            if(is_null($item)) return $keranjang;
+
+            $keranjang->updateItem($item, $jumlahBeli);
+            session()->add('keranjang', $keranjang->toArray());
+
+            return $keranjang;
+        }
 
         $beras = is_int($beras) ? $this->berasRepository->findById($beras) : $beras;
         if(!$beras) return $keranjang;
-
         $item = Item::create($beras, $jumlahBeli);
-
-        /** @var $keranjang Keranjang */
         $keranjang->addItem($item);
-
         session()->add('keranjang', $keranjang->toArray());
-        return $keranjang;
-    }
 
-    public function perbaharuiStokBeli(string $key, int $stokBaru): void
-    {
-        
+        return $keranjang;
     }
 
     public function get() : Keranjang

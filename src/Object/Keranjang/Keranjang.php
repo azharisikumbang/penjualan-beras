@@ -200,4 +200,17 @@ class Keranjang
         $this->setTotal($total);
     }
 
+    public function updateItem(Item $item, int $jumlahBeli) : void
+    {
+        $item->setJumlahBeli($jumlahBeli);
+        $item->updateTotalHarga();
+
+        foreach ($this->getItems() as $index => $existing)
+            if($item->getKey() == $existing->getKey()) {
+                $this->items[$index] = $item;
+                $this->updateTotal();
+                break;
+            }
+    }
+
 }
