@@ -213,4 +213,14 @@ class Keranjang
             }
     }
 
+    public function removeItem(string $key) : void
+    {
+        foreach ($this->getItems() as $index => $existing)
+            if($key == $existing->getKey()) {
+                unset($this->items[$index]);
+                $this->setItems(array_values($this->getItems()));
+                $this->updateTotal();
+                break;
+            }
+    }
 }

@@ -119,7 +119,7 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
                                     <div class="text-sm text-red-500">
                                         <button @click="editItemKeranjang(item)" type="button" class=" hover:underline">Ubah</button>
                                         -
-                                        <button type="button" href="" class=" hover:underline">Hapus</button>
+                                        <button @click="hapusItemDariKeranjang(item)" type="button" class=" hover:underline">Hapus</button>
                                     </div>
                                 </div>
                                 <div>
@@ -192,22 +192,19 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
                     }
                 )
             },
-            "hapusData": function (entity) {
+            "hapusItemDariKeranjang": function (item) {
                 if(!confirm('Anda yakin ingin menghapus data ini ?')) return;
 
                 this.clearMassage();
 
                 let alpineObj = this;
                 this.postData(
-                    '/api/beras/delete',
+                    '/api/keranjang/delete',
                     this.createFormData({
-                        'id': entity.id,
+                        'key': item.key,
                     }),
                     function (response) {
-                        let index = alpineObj.properties.data.list_beras.findIndex(item => item.id == response.data.data.deleted_id);
-                        alpineObj.properties.data.list_beras.splice(index, 1);
-
-                        alpineObj.addNormalMessage('form_response', 'Berhasil! Data telah dihapus.');
+                        alpineObj.properties.data.list_keranjang = response.data.data;
                     },
                     function (err) {
                         alpineObj.addErrorMassage('bad_request', 'Gagal menghapus data, mohon muat ulang halaman dan coba lagi.')
@@ -226,8 +223,6 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
 
                     return;
                 }
-
-                console.log(this.properties.data.list_keranjang.items[indexItem]);
 
                 this.properties.form.selected.jumlah_beli = 0;
                 this.countTotal()

@@ -52,4 +52,17 @@ class KelolaKeranjang
 
         return Keranjang::buildFromSessionArray(session('keranjang'));
     }
+
+    public function hapusItemDariKeranjang(string $key) : Keranjang
+    {
+        /** @var $keranjang Keranjang */
+        $keranjang = $this->get();
+
+        if($keranjang->exists($key)) {
+            $keranjang->removeItem($key);
+            session()->add('keranjang', $keranjang->toArray());
+        }
+
+        return $keranjang;
+    }
 }
