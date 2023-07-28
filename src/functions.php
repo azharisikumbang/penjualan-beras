@@ -57,7 +57,7 @@ if(!(function_exists('get_current_path'))) {
 }
 
 if (!function_exists('session')) {
-    function session(string $key = null) : mixed
+    function session(?string $key = null) : mixed
     {
         $manager = app()->getManager()->getSessionManager();
 

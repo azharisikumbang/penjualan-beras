@@ -96,7 +96,7 @@ class Item
     {
         return [
             'key' => $this->getKey(),
-            'detail' => $this->getBeras(),
+            'detail' => $this->getBeras()?->toArray(),
             'total_harga' => $this->getTotalHarga(),
             'jumlah_beli' => $this->getJumlahBeli()
         ];

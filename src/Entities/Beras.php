@@ -75,13 +75,19 @@ class Beras implements EntityInterface
         $this->stok = $stok;
     }
 
+    public function stokTersedia(): bool
+    {
+        return $this->getStok() > 0;
+    }
+
     public function toArray(): array
     {
         return [
-          'id' => $this->getId(),
-          'jenis' => $this->getJenis(),
-          'harga' => $this->getHarga(),
-          'stok'=> $this->getStok()
+            'id' => $this->getId(),
+            'jenis' => $this->getJenis(),
+            'harga' => $this->getHarga(),
+            'stok'=> $this->getStok(),
+            'stok_tersedia' => $this->stokTersedia()
         ];
     }
 

@@ -49,7 +49,7 @@ class Session implements SessionInterface
         $akun = new Akun();
         $akun->setId($user['id']);
         $akun->setUsername($user['username']);
-        $akun->setRole(Role::tryFrom(strtolower($user['role'])));
+        $akun->setRole(Role::from(strtolower($user['role'])));
 
         return $akun;
     }
@@ -57,7 +57,7 @@ class Session implements SessionInterface
     public function isAuthenticatedAs(string|Role $role): bool
     {
         $auth = $this->auth();
-        $role = is_string($role) ? Role::tryFrom(strtolower($role)) : $role;
+        $role = is_string($role) ? Role::from(strtolower($role)) : $role;
 
         return $auth && $auth->getRole()->value == $role->value;
     }
