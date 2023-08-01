@@ -75,12 +75,11 @@ abstract class BaseRepository
 
     public function exists(int|EntityInterface $entity): bool
     {
-        if($entity instanceof $entity) {
-            if(is_null($entity->getId())) return false;
-
-            $id = $entity->getId();
-        }
-
+//        if($entity instanceof EntityInterface) {
+//            if(is_null($entity->getId())) return false;
+//
+//            $id = $entity->getId();
+//        }
 
         $query = "SELECT EXISTS(SELECT id FROM {$this->getTable()} WHERE id = :id) as 'exists'";
 
@@ -102,6 +101,14 @@ abstract class BaseRepository
         $stmt->execute([$column => $value]);
 
         return $stmt->rowCount() ? $this->toEntity($stmt->fetch(PDO::FETCH_ASSOC)) : null;
+    }
+
+    protected function execute($query, array $bind = []) : false|PDOStatement
+    {
+        $stmt = $this->getDatabaseConnection()->prepare($query);
+        $stmt->execute($bind);
+
+        return $stmt;
     }
 
     protected function basicSave(EntityInterface $entity, array $attributes = []): false|EntityInterface
