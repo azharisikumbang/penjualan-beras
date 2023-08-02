@@ -24,6 +24,18 @@ class PelangganRepository extends BaseRepository
         return $stmt->execute(['id' => $id]) ? $this->toEntity($stmt->fetch(PDO::FETCH_ASSOC)) : null;
     }
 
+    public function findByAkunId(int $id): ?Pelanggan
+    {
+        $query = "SELECT * FROM {$this->getTable()} WHERE akun_id = :akun_id";
+
+        $stmt = $this->getDatabaseConnection()->prepare($query);
+        $stmt->execute(['akun_id' => $id]);
+
+        if($stmt->rowCount() < 1) return null;
+
+        return  $this->toEntity($stmt->fetch(PDO::FETCH_ASSOC), false);
+    }
+
     public function get(int $length = 10, int $start = 0, string $order = 'id', string $by = 'DESC'): array
     {
         $query = "SELECT p.*, a.username as akun_username, a.password as akun_password, a.role as akun_role 
@@ -40,20 +52,23 @@ class PelangganRepository extends BaseRepository
     }
 
 
-    protected function toEntity(array $rows): Pelanggan
+    protected function toEntity(array $rows, bool $hasRelations = true): Pelanggan
     {
-        $akun = new Akun();
-        $akun->setId($rows['akun_id']);
-        $akun->setUsername($rows['akun_username']);
-        $akun->setPassword($rows['akun_password'], false);
-        $akun->setRole(Role::from($rows['akun_role']));
-
         $pelanggan = new Pelanggan();
         $pelanggan->setId($rows['id']);
         $pelanggan->setNama($rows['nama']);
         $pelanggan->setKontak($rows['kontak']);
         $pelanggan->setAlamat($rows['alamat']);
-        $pelanggan->setAkun($akun);
+        $pelanggan->setAkunId($rows['akun_id']);
+
+        if($hasRelations) {
+            $akun = new Akun();
+            $akun->setId($rows['akun_id']);
+            $akun->setUsername($rows['akun_username']);
+            $akun->setPassword($rows['akun_password'], false);
+            $akun->setRole(Role::from($rows['akun_role']));
+            $pelanggan->setAkun($akun);
+        }
 
         return $pelanggan;
     }
