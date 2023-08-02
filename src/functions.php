@@ -84,7 +84,7 @@ if (!function_exists('request')) {
 if (!function_exists('tanggal')) {
     function tanggal(DateTimeInterface $date, bool $month = true, bool $full = false)
     {
-        $format = $full ? "Y/m/d H:i:s" : "Y/m/d";
+        $format = $full ? "d/m/Y H:i:s" : "Y/m/d";
         $today = $date->format($format);
         if ($month) {
             $listMonth = [
