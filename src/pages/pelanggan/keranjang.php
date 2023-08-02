@@ -90,7 +90,8 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                             <tr>
                                 <td class="w-4 p-4 text-center" x-text="index + 1"></td>
                                 <td class="p-4 whitespace-nowrap">
-                                    <p class="font-semibold" x-text="item.detail.jenis"></p>
+                                    <span class="text-base font-semibold text-gray-900 dark:text-white" x-text="item.detail.relations.beras.jenis"></span>
+                                    ( takaran: <span class="" x-text="item.detail.relations.takaran.variant.toUpperCase()"></span> )
                                 </td>
                                 <td class="p-4 text-gray-500 text-base text-center" x-text="currencyToRupiah(item.detail.harga)"></td>
                                 <td class="p-4 text-gray-500 text-base text-center"><span x-text="addDotToCurrentcy(item.jumlah_beli)"></span> kg</td>
@@ -117,28 +118,38 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                 </table>
             </div>
             <div class="ml-4">
-                <div class="rounded border border-blue-600 p-4 mb-4 text-blue-600">
-                    <strong>Informasi Pembelian !</strong>
-                    <p>Anda bisa mendapatkan harga khusus untuk pembelian diatas 10kg yang akan dihitung pada langkah berikutnya.</p>
+                <div class="rounded border text-blue-600 border-blue-600 p-2 mb-2">
+                    <strong>Informasi:</strong>
+                    <p class="text-sm">- Kolom <b>*jumlah beli</b> diisi jumlah pembelian dalam satuan takaran. </p>
+                    <p class="text-sm">- <b>Sub-Total</b> dihitung berdasarkan banyak jumlah beli dengan harga per takaran. </p>
                 </div>
-                <div class="border rounded border-gray-300 p-4 grid grid-cols-3 gap-4 items-center mb-4">
-                    <div>
-                        <p class="font-semibold text-lg text-gray-900" x-text="properties.form.selected.jenis"></p>
-                        <p class="text-sm text-gray-500"><span x-text="currencyToRupiah(properties.form.selected.harga)"></span> /kg</p>
+                <div class="border rounded border-gray-300 p-4 mb-4">
+                    <div class="flex justify-between gap-4 items-center">
+                        <div class="col-span-2">
+                            <p class="font-semibold text-lg text-gray-900" x-text="properties.form.selected.beras_jenis"></p>
+                            <p class="text-sm text-gray-500"><span x-text="currencyToRupiah(properties.form.selected.harga)"></span> / takaran</p>
+                        </div>
+                        <div class="gap-1 w-48 grid-cols-5 grid items-center">
+                            <input @keyup="countTotal" x-model="properties.form.selected.jumlah_beli" type="number" class="col-span-3 border border-gray-300 rounded bg-gray-100 px-2 py-1 outline-none focus:border-gray-400" placeholder="jumlah beli*">
+                            <small class="col-span-2">
+                                x <span x-text="properties.form.selected.takaran_variant"></span>
+                            </small>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-1">
-                        <input @keyup="countTotal" x-model="properties.form.selected.jumlah_beli" type="number" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 outline-none focus:border-gray-400" placeholder="jumlah beli (kg)">
-                        <span>kg</span>
+                    <div class="flex justify-between items-center border-t border-gray-300 py-2 mt-4">
+                        <div class="text-sm">
+                            <span>Takaran: </span>
+                            <span x-text="properties.form.selected.takaran_variant.toUpperCase()"></span>
+                        </div>
+                        <div class="text-right font-semibold">
+                            <span>Sub-Total: </span>
+                            <span x-text="currencyToRupiah(properties.form.selected.total)"></span>
+                        </div>
                     </div>
-                    <div class="text-right font-semibold">
-                        <p x-text="currencyToRupiah(properties.form.selected.total)"></p>
-                    </div>
-                    <div class="col-span-3 ">
-                        <button @click="tambahkanKeKeranjang" type="button" class="text-sm w-full text-white bg-gray-500 rounded py-2 px-4 hover:bg-gray-600 text-center">Simpan Ke Keranjang</button>
-                    </div>
+                    <button @click="tambahkanKeKeranjang" type="button" class="text-sm w-full text-white bg-gray-500 rounded py-2 px-4 hover:bg-gray-600 text-center">Perbaharui</button>
                 </div>
                 <div>
-                    <button @click="simpanPesanan" class="block text-sm w-full text-white bg-green-500 rounded py-2 px-4 hover:bg-green-600 text-center">Pesan Sekarang</button>
+                    <button @click="simpanPesanan" class="block text-sm w-full text-white bg-green-500 rounded py-2 px-4 hover:bg-green-600 text-center">Proses Pesanan</button>
                 </div>
             </div>
         </div>
@@ -148,8 +159,21 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
     document.addEventListener('alpine:init', () => {
         // @TODO: separate to file
         const actions = {
-            "cari": function () {
-                alert('not-implemented');
+            "simpanPesanan": function () {
+                let alpineObj = this;
+                this.postData(
+                    '/api/keranjang/save',
+                    this.createFormData({}),
+                    function (response) {
+                        alpineObj.addNormalMessage('form_response', `Berhasil! Pesanan anda telah dicatat dengan nomor ... Anda akan dialihkan untuk mengisi informasi pengiriman.`);
+                        setTimeout(function () {
+                            window.location = `${alpineObj.properties.sites.api_url}/pelanggan/pengiriman?nomor=${response.data.data.nomor_pesanan}`
+                        }, 2000)
+                    },
+                    function (err) {
+                        alpineObj.addErrorMassage('bad_request', 'Gagal mencatat pesanan anda, mohon periksa dan coba kembali.')
+                    }
+                )
             },
             "hapusItemDariKeranjang": function (item) {
                 if(!confirm('Anda yakin ingin menghapus data ini ?')) return;
@@ -174,22 +198,6 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
             "countTotal": function () {
                 this.properties.form.selected.total = this.properties.form.selected.jumlah_beli * this.properties.form.selected.harga
             },
-            "simpanPesanan": function () {
-                let alpineObj = this;
-                this.postData(
-                    '/api/keranjang/save',
-                    this.createFormData({}),
-                    function (response) {
-                        alpineObj.addNormalMessage('form_response', `Berhasil! Pesanan anda telah dicatat dengan nomor ... Anda akan dialihkan untuk mengisi informasi pengiriman.`);
-                        setTimeout(function () {
-                            window.location = `${alpineObj.properties.sites.api_url}/pelanggan/pengiriman?nomor=${response.data.data.nomor_pesanan}`
-                        }, 2000)
-                    },
-                    function (err) {
-                        alpineObj.addErrorMassage('bad_request', 'Gagal mencatat pesanan anda, mohon periksa dan coba kembali.')
-                    }
-                )
-            },
             "tambahkanKeKeranjang": function () {
                 if (this.properties.form.selected.id < 1) return;
 
@@ -197,13 +205,21 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                 this.postData(
                     '/api/keranjang/add',
                     this.createFormData({
-                        'beras': this.properties.form.selected.id,
+                        'beras': this.properties.form.selected.beras_id,
+                        'takaran': this.properties.form.selected.takaran_id,
                         'jumlah_beli': this.properties.form.selected.jumlah_beli,
                         'key': this.properties.form.selected.key
                     }),
                     function (response) {
                         alpineObj.properties.data.keranjang = response.data.data;
-                        alpineObj.addNormalMessage('form_response', `Berhasil! Keranjang belanja telah diperbaharui.`);
+                        alpineObj.properties.form.selected.key = '';
+                        alpineObj.properties.form.selected.beras_id = -1;
+                        alpineObj.properties.form.selected.takaran_id = -1;
+                        alpineObj.properties.form.selected.beras_jenis = '-';
+                        alpineObj.properties.form.selected.takaran_variant = '0 Kg';
+                        alpineObj.properties.form.selected.harga = 0;
+                        alpineObj.properties.form.selected.stok = 0;
+                        alpineObj.properties.form.selected.jumlah_beli = 0;
                     },
                     function (err) {
                         alpineObj.addErrorMassage('bad_request', 'Gagal dalam menyimpan, mohon periksa data dan coba lagi.')
@@ -214,14 +230,16 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                 this.properties.data.keranjang = (await this.getApiRequest('/api/keranjang/list')).data;
             },
             "editItemKeranjang": function (item) {
-                this.properties.form.selected.id = item.detail.id;
-                this.properties.form.selected.jenis = item.detail.jenis;
+                this.properties.form.selected.beras_id = item.detail.beras_id;
+                this.properties.form.selected.takaran_id = item.detail.takaran_id;
+                this.properties.form.selected.beras_jenis = item.detail.relations.beras.jenis;
+                this.properties.form.selected.takaran_variant = item.detail.relations.takaran.variant;
                 this.properties.form.selected.harga = item.detail.harga;
-                this.properties.form.selected.stok = item.detail.stok;
+                this.properties.form.selected.stok = item.detail.jumlah_stok;
                 this.properties.form.selected.key = item.key;
 
                 this.properties.form.selected.jumlah_beli = item.jumlah_beli;
-                this.countTotal()
+                this.countTotal();
             },
             "sortItem": function () {
                 const selected = this.$event.target.value;
@@ -335,11 +353,14 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                     },
                     "form": {
                         "selected": {
-                            'id' : -1,
-                            'jenis': '-',
+                            'beras_id' : -1,
+                            'takaran_id' : -1,
+                            'beras_jenis': '-',
+                            'takaran_variant': '-',
                             'harga': 0,
                             'stok': 0,
                             'jumlah_beli': 0,
+                            'jumlah_stok_beli': 0,
                             'total': 0,
                             'key': null
                         }
