@@ -78,34 +78,16 @@ if(false === $valid) response()->notFound();
                             <p>Total Tagihan</p>
                             <p class="font-semibold" x-text="currencyToRupiah(properties.data.pesanan.total_tagihan)"></p>
                         </div>
-                        <div class="flex justify-between border-b text-gray-900 py-1 mb-1">
+                        <div class="flex justify-between text-gray-900 py-1 mb-1">
                             <p>Item pembelian</p>
                             <ul>
                                 <template x-for="item in properties.data.pesanan.list_pesanan">
-                                    <li class="list-disc text-sm italic">
-                                        <span x-text="item.nama_beras"></span> (<span x-text="addDotToCurrentcy(item.jumlah_beli)"></span>kg)
-                                        <span x-text="currencyToRupiah(item.total)"></span>
+                                    <li class="text-right text-sm italic">
+                                        <span x-text="item.jenis_beras"></span> (takaran: <span x-text="item.takaran_beras"></span>)
+                                        @<span x-text="currencyToRupiah(item.total)"></span>
                                     </li>
                                 </template>
                             </ul>
-                        </div>
-                        <div class="mb-4 hidden">
-                            <template x-for="item in properties.data.pesanan.list_pesanan">
-                                <div class="flex justify-between border-b pb-1 mb-2">
-                                    <div>
-                                        <p class="text-gray-600">
-                                            <span x-text="item.nama_beras" class="font-semibold"></span> @<span x-text="addDotToCurrentcy(item.jumlah_beli)"></span>kg
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <p x-text="currencyToRupiah(item.total)"></p>
-                                    </div>
-                                </div>
-                            </template>
-                            <div class="flex justify-between items-center font-semibold">
-                                <p>Total Belanja</p>
-                                <p x-text="currencyToRupiah(properties.data.pesanan.total_tagihan)"></p>
-                            </div>
                         </div>
                     </div>
                     <div>
