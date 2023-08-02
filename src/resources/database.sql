@@ -9,7 +9,6 @@ CREATE TABLE akun (
 CREATE TABLE beras (
     id int primary key auto_increment,
     jenis varchar(128) not null,
-    harga decimal(10, 2) default 0,
     created_at DATETIME default CURRENT_TIMESTAMP,
     updated_at DATETIME default CURRENT_TIMESTAMP
 );
@@ -23,6 +22,7 @@ CREATE TABLE stok(
   beras_id int not null,
   varian_takaran_id int not null,
   jumlah_stok int unsigned default 0,
+  harga decimal(10, 2) default 0,
 
   FOREIGN KEY (beras_id) REFERENCES beras(id),
   FOREIGN KEY (varian_takaran_id) REFERENCES varian_takaran(id)
