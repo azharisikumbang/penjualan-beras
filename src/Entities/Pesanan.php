@@ -6,21 +6,23 @@ require_once __DIR__ . '/DetailPesanan.php';
 
 class Pesanan implements EntityInterface
 {
-    private ?int $id;
+    private ?int $id = null;
 
     private string $nomorPesanan;
 
     private int $nomorIterasiPesanan;
 
-    private string $namaPesanan;
+    private string $namaPesanan = "";
+
+    private ?string $kontakPesanan = "";
 
     private DateTimeInterface $tanggalPemesanan;
 
     private float $totalTagihan;
 
-    private string $alamatPengiriman;
+    private string $alamatPengiriman = "";
 
-    private Pelanggan $pemesan;
+    private ?Pelanggan $pemesan;
 
     private array $listPesanan = [];
 
@@ -75,6 +77,22 @@ class Pesanan implements EntityInterface
     }
 
     /**
+     * @return string
+     */
+    public function getKontakPesanan(): ?string
+    {
+        return $this->kontakPesanan;
+    }
+
+    /**
+     * @param string $kontakPesanan
+     */
+    public function setKontakPesanan(?string $kontakPesanan): void
+    {
+        $this->kontakPesanan = $kontakPesanan;
+    }
+
+    /**
      * @return DateTimeInterface
      */
     public function getTanggalPemesanan(): DateTimeInterface
@@ -125,7 +143,7 @@ class Pesanan implements EntityInterface
     /**
      * @return Pelanggan
      */
-    public function getPemesan(): Pelanggan
+    public function getPemesan(): ?Pelanggan
     {
         return $this->pemesan;
     }
@@ -133,14 +151,14 @@ class Pesanan implements EntityInterface
     /**
      * @param Pelanggan $pemesan
      */
-    public function setPemesan(Pelanggan $pemesan): void
+    public function setPemesan(?Pelanggan $pemesan): void
     {
         $this->pemesan = $pemesan;
     }
 
     public function addDetailPesanan(DetailPesanan $detailPesanan): void
     {
-        // TODO: Add Detail Pesanan To List
+        $this->listPesanan[] = $detailPesanan;
     }
 
     public function getListPesanan(): array
@@ -187,10 +205,11 @@ class Pesanan implements EntityInterface
             'nomor_pesanan' => $this->getNomorPesanan(),
             'nomor_iterasi_pesanan' => $this->getNomorIterasiPesanan(),
             'nama_pesanan' => $this->getNamaPesanan(),
+            'kontak_pesanan' => $this->getKontakPesanan(),
             'alamat_pengiriman' => $this->getAlamatPengiriman(),
             'tanggal_pemesanan' => $this->getTanggalPemesanan()->format('Y-m-d H:i:s'),
             'total_tagihan' => $this->getTotalTagihan(),
-            'pemesan' => $this->getPemesan()->toArray(),
+            'pemesan' => $this->getPemesan()?->toArray(),
             'list_pesanan' => array_map(fn ($item) => $item->toArray(), $this->getListPesanan()),
             'transaksi' => $this->getTransaksi()?->toArray()
         ];
