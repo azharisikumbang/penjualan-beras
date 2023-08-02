@@ -8,6 +8,5 @@
 </head>
 <body>
 <?php require_once $content; ?>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </body>
 </html>
