@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../Repositories/PelangganRepository.php';
+require_once __DIR__ . '/../Services/KelolaPesanan.php';
 require_once __DIR__ . '/../Entities/Pelanggan.php';
 
 class KelolaPelanggan
@@ -15,5 +16,22 @@ class KelolaPelanggan
     public function listPelanggan(int $total = 10, int $start = 0): array
     {
         return $this->pelangganRepository->get($total, $start, 'nama', 'ASC');
+    }
+
+    public function cariBerdasarkanAkun(Akun $akun) : Pelanggan
+    {
+        $pelanggan = $this->pelangganRepository->findByAkunId($akun->getId());
+        $pelanggan->setAkun($akun);
+
+        return $pelanggan;
+    }
+
+    public function listPesananByPelanggan(Pelanggan|Akun $pelanggan): array
+    {
+        $pelanggan = $pelanggan instanceof Pelanggan ? $pelanggan : $this->pelangganRepository->findByAkunId($pelanggan->getId());
+        if(is_null($pelanggan)) return [];
+
+        $kelolaPesanan = new KelolaPesanan();
+        return $kelolaPesanan->cariBerdasarkanPemesan($pelanggan, true);
     }
 }
