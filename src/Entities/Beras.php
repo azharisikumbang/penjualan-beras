@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../Contract/EntityInterface.php';
+require_once __DIR__ . '/Takaran.php';
 
 class Beras implements EntityInterface
 {
@@ -9,10 +10,7 @@ class Beras implements EntityInterface
 
     private string $jenis;
 
-    private float $harga;
-
-    private int $stok;
-
+    private array $listTakaran = [];
 
     public function getId(): ?int
     {
@@ -44,40 +42,29 @@ class Beras implements EntityInterface
     }
 
     /**
-     * @return float
+     * @return array
      */
-    public function getHarga(): float
+    public function getListTakaran(): array
     {
-        return $this->harga;
+        return $this->listTakaran;
     }
 
     /**
-     * @param float $harga
+     * @param array $listTakaran
      */
-    public function setHarga(float $harga): void
+    public function setListTakaran(array $listTakaran): void
     {
-        $this->harga = $harga;
+        $this->listTakaran = $listTakaran;
     }
 
-    /**
-     * @return int
-     */
-    public function getStok(): int
+    public function addTakaran(Takaran $takaran) : bool
     {
-        return $this->stok;
-    }
+        foreach ($this->getListTakaran() as $item)
+            if($item->getId() == $takaran->getId()) return false;
 
-    /**
-     * @param int $stok
-     */
-    public function setStok(int $stok): void
-    {
-        $this->stok = $stok;
-    }
+        $this->listTakaran[] = $takaran;
 
-    public function stokTersedia(): bool
-    {
-        return $this->getStok() > 0;
+        return true;
     }
 
     public function toArray(): array
@@ -85,9 +72,7 @@ class Beras implements EntityInterface
         return [
             'id' => $this->getId(),
             'jenis' => $this->getJenis(),
-            'harga' => $this->getHarga(),
-            'stok'=> $this->getStok(),
-            'stok_tersedia' => $this->stokTersedia()
+            'list_takaran' => array_map(fn ($item) => $item->toArray(), $this->getListTakaran())
         ];
     }
 

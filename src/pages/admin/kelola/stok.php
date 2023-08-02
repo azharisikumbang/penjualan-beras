@@ -8,14 +8,13 @@ if (isset($_GET['page'])) {
 
 $page = $_GET['page'] ?? 1;
 
-$listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
-$listTakaran = app()->getManager()->getService('KelolaTakaran')->listTakaran();
+$listStokBeras = app()->getManager()->getService('KelolaStok')->listStokBeras();
 
 ?>
 <main x-data="container">
     <div class="px-4 pt-6">
         <div class="mb-4 col-span-full">
-            <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white" ref="title">Kelola Data Beras</h1>
+            <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white" ref="title">Data Stok dan Harga</h1>
         </div>
         <?php if(session('temp')): ?>
             <div class="mb-4 block w-full text-base font-regular px-4 py-4 rounded-lg bg-green-500 text-white">
@@ -37,7 +36,7 @@ $listTakaran = app()->getManager()->getService('KelolaTakaran')->listTakaran();
                 <div class="px-4 py-8 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm">
                     <form action="#" method="GET" class="flex flex-row justify-start items-center">
                         <div class="flex justify-end w-2/6 ">
-                            <input type="text" name="email" id="products-search" class="bg-gray-50 border rounded-bl-lg rounded-tl-lg border-gray-300 text-gray-900 sm:text-sm focus:border-gray-200 focus:border-gray-200 outline-none block w-full p-2.5" placeholder="Cari produk">
+                            <input type= "text" name="email" id="products-search" class="bg-gray-50 border rounded-bl-lg rounded-tl-lg border-gray-300 text-gray-900 sm:text-sm focus:border-gray-200 focus:border-gray-200 outline-none block w-full p-2.5" placeholder="Cari produk">
                             <buttton type="submit" class="border border-gray-300 cursor-pointer rounded-tr-lg rounded-br-lg bg-gray-100 hover:bg-yellow-800 px-5 py-2 focus:outline-none outline-none hover:bg-gray-200">
                                 <svg class="w-5 h-6 text-gray-100" viewBox="0 0 20 20">
                                     <path d="M19.129,18.164l-4.518-4.52c1.152-1.373,1.852-3.143,1.852-5.077c0-4.361-3.535-7.896-7.896-7.896
@@ -50,50 +49,49 @@ $listTakaran = app()->getManager()->getService('KelolaTakaran')->listTakaran();
                     </form>
                     <table class="w-full my-4">
                         <thead class="bg-gray-100 dark:bg-gray-700">
-                            <tr>
-                                <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
-                                    No
-                                </th>
-                                <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase">
-                                    Jenis Beras
-                                </th>
-                                <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase">
-                                    Jenis Takaran Tersedia
-                                </th>
-                                <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
-                                </th>
-                            </tr>
+                        <tr>
+                            <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
+                                No
+                            </th>
+                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase">
+                                Jenis Beras
+                            </th>
+                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase">
+                                Stok Tersedia (kg)
+                            </th>
+                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase">
+                                Harga (Rupiah)
+                            </th>
+                            <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
+                            </th>
+                        </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
-                            <?php if($listBeras ): ?>
-                            <template x-for="(item, index) in properties.data.list_beras" :key="index">
+                            <template x-for="(item, index) in properties.data.list_stok_beras" :key="index">
                                 <tr>
                                     <td class="w-4 p-4" x-text="index + 1"></td>
                                     <td class="p-4 whitespace-nowrap">
-                                        <p class="text-base font-semibold text-gray-900 dark:text-white" x-text="item.jenis"></p>
+                                        <span class="text-base font-semibold text-gray-900 dark:text-white" x-text="item.relations.beras.jenis"></span>
+                                        ( takaran: <span class="" x-text="item.relations.takaran.variant.toUpperCase()"></span> )
                                     </td>
                                     <td class="p-4 whitespace-nowrap">
-                                        <p class="text-base text-gray-900 dark:text-white" x-text="item.list_takaran.map(e => e.variant).join(', ')"></p>
+                                        <p class="text-base text-gray-600">
+                                            <span class="" x-text="addDotToNumber(item.jumlah_stok)"></span> Kg
+                                        </p>
+                                    </td>
+                                    <td class="p-4 whitespace-nowrap">
+                                        <p class="text-base text-gray-600">
+                                            <span class="" x-text="currencyToRupiah(item.harga)"></span>
+                                        </p>
                                     </td>
                                     <td class="p-4 space-x-2 whitespace-nowrap flex justify-end">
-                                        <button @click="editData(item)" type="button" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-blue-500 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300">
+                                        <button @click="editData(item)" type="button" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-orange-500 hover:bg-orange-700 focus:ring-4 focus:ring-orange-300">
                                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
                                             Perbaharui
-                                        </button>
-                                        <button @click="hapusData(item)" type="button" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-red-600 rounded-lg hover:bg-red-800 focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
-                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                                            Delete item
                                         </button>
                                     </td>
                                 </tr>
                             </template>
-                            <?php else: ?>
-                            <tr>
-                                <td class="text-center italic text-gray-400 pt-4" colspan="4">
-                                    Tidak ada data.
-                                </td>
-                            </tr>
-                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
@@ -113,20 +111,19 @@ $listTakaran = app()->getManager()->getService('KelolaTakaran')->listTakaran();
             <div>
                 <form @submit.prevent="simpanData" class="p-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm">
                     <div>
-                        <h3 class="font-semibold text-lg mb-4" x-text="properties.sites.button_title"></h3>
+                        <h3 class="font-semibold text-lg mb-4">Perbaharui Stok dan Harga</h3>
                     </div>
                     <div class="mb-4">
-                        <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jenis Beras <small class="text-gray-500" x-text="properties.sites.query_title"></small></label>
-                        <input x-model="properties.form.jenis" type="text" class="shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none block w-full p-2.5" required autofocus>
+                        <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jenis Beras (otomatis)</label>
+                        <input x-model="properties.form.selected_string" type="text" class="shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none block w-full p-2.5" disabled>
                     </div>
                     <div class="mb-4">
-                        <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900">Jenis Beras <small class="text-gray-500" x-text="properties.sites.query_title"></small></label>
-                        <template x-for="takaran in properties.data.list_takaran" :key="takaran.id">
-                            <div class="text-gray-600">
-                                <input x-model="properties.form.takaran" type="checkbox" :value="takaran.id" class="cursor-pointer">
-                                <span x-text="takaran.variant"></span>
-                            </div>
-                        </template>
+                        <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stok</label>
+                        <input x-model="properties.form.stok" type="number" class="shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none block w-full p-2.5">
+                    </div>
+                    <div class="mb-4">
+                        <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Harga Jual / Takaran</label>
+                        <input x-model="properties.form.harga" type="number" class="shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none block w-full p-2.5">
                     </div>
                     <div class="mb-2 mt-6 text-right">
                         <button class="inline-flex items-center text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center" type="submit">
@@ -148,70 +145,38 @@ $listTakaran = app()->getManager()->getService('KelolaTakaran')->listTakaran();
         // @TODO: separate to file
         const actions = {
             "editData": function (item) {
-                this.properties.form.id = item.id;
-                this.properties.form.jenis = item.jenis;
-                this.properties.form.takaran = [];
+                this.properties.form.beras_id = item.beras_id;
+                this.properties.form.takaran_id = item.takaran_id;
+                this.properties.form.stok = item.jumlah_stok;
+                this.properties.form.harga = item.harga;
 
-                item.list_takaran.map(e => {
-                    this.properties.form.takaran.push(e.id);
-                });
-
-                this.properties.sites.query_title = `(dipilih: ${item.jenis})`;
-                this.properties.sites.button_title = 'Perbaharui Data Beras';
+                this.properties.form.selected_string = `${item.relations.beras.jenis} - (takaran: ${item.relations.takaran.variant})`;
             },
             "simpanData": function () {
                 this.clearMassage();
                 let alpineObj = this;
 
                 this.postData(
-                    '/api/beras/create',
+                    '/api/stok/update',
                     this.createFormData({
-                        'id': this.properties.form.id,
-                        'jenis': this.properties.form.jenis,
-                        'takaran': this.properties.form.takaran,
+                        'beras_id': this.properties.form.beras_id,
+                        'takaran_id': this.properties.form.takaran_id,
+                        'stok': this.properties.form.stok,
+                        'harga': this.properties.form.harga
                     }),
                     function (response) {
-                        if (alpineObj.properties.form.id < 0) { // saved
-                            <?php if(empty($listBeras)): ?>window.location.reload();
-                            <?php endif; ?>alpineObj.properties.data.list_beras.push(response.data.data);
-                            alpineObj.properties.form.jenis = "";
-                            alpineObj.properties.form.takaran = [];
-                            alpineObj.addNormalMessage('form_response', `Berhasil! Data (Beras: ${response.data.data.jenis}) telah disimpan.`);
-
-                            return;
-                        }
-
                         // updated
-                        let index = alpineObj.properties.data.list_beras.findIndex(item => item.id == response.data.data.id);
-                        alpineObj.properties.data.list_beras[index].jenis = response.data.data.jenis;
-                        alpineObj.properties.data.list_beras[index].list_takaran = response.data.data.list_takaran;
+                        let index = alpineObj.properties.data.list_stok_beras.findIndex(item => {
+                            return item.beras_id == response.data.data.beras_id && item.takaran_id == response.data.data.takaran_id;
+                        });
+                        alpineObj.properties.data.list_stok_beras[index].jumlah_stok = response.data.data.jumlah_stok;
+                        alpineObj.properties.data.list_stok_beras[index].harga = response.data.data.harga;
 
-                        alpineObj.addNormalMessage('form_response', `Berhasil! Data (Beras: ${response.data.data.jenis}) telah diperbaharui.`);
+                        alpineObj.addNormalMessage('form_response', `Berhasil! Stok dan harga (Beras: ${response.data.data.relations.beras.jenis} takaran: ${response.data.data.relations.takaran.variant}) telah diperbaharui.`);
                     },
                     function (err) {
-                        alpineObj.addErrorMassage('bad_request', err.response.data.errors[0])
-                    }
-                )
-            },
-            "hapusData": function (entity) {
-                if(!confirm('Anda yakin ingin menghapus data ini ?')) return;
-
-                this.clearMassage();
-
-                let alpineObj = this;
-                this.postData(
-                    '/api/beras/delete',
-                    this.createFormData({
-                        'id': entity.id,
-                    }),
-                    function (response) {
-                        let index = alpineObj.properties.data.list_beras.findIndex(item => item.id == response.data.data.deleted_id);
-                        alpineObj.properties.data.list_beras.splice(index, 1);
-
-                        alpineObj.addNormalMessage('form_response', 'Berhasil! Data telah dihapus.');
-                    },
-                    function (err) {
-                        alpineObj.addErrorMassage('bad_request', 'Gagal menghapus data, mohon muat ulang halaman dan coba lagi.')
+                        console.log(err);
+                        alpineObj.addErrorMassage('bad_request', err.response.data.errors.message);
                     }
                 )
             }
@@ -223,28 +188,12 @@ $listTakaran = app()->getManager()->getService('KelolaTakaran')->listTakaran();
                 let date = new Date(tanggal);
 
                 return date.toLocaleDateString('id-ID',  { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            },"currencyToRupiah": function (number) {
-                return 'Rp ' + (new Intl.NumberFormat('id-Id', {"maximumSignificantDigits": 3}).format(number));
             },
-            "buttonLoading": function(elem, statusText = 'Mohon Tunggu') {
-                elem.disabled = true;
-                elem.innerText = statusText;
-                elem.classList.add('bg-gray-700');
-                elem.classList.add('hover:bg-gray-700');
-                elem.classList.add('focus:ring-gray-700');
-                elem.classList.add('opacity-80');
-                elem.classList.add('cursor-not-allowed');
+            "currencyToRupiah": function (number) {
+                return 'Rp ' + this.addDotToNumber(number);
             },
-            "buttonRemoveLoading": function (elem, statusText, success = 'bg-green-700') {
-                elem.disabled = false;
-                elem.innerText = statusText;
-                elem.classList.remove('bg-gray-700');
-                elem.classList.remove('hover:bg-gray-700');
-                elem.classList.remove('focus:ring-gray-700');
-                elem.classList.remove('opacity-80');
-                elem.classList.remove('cursor-not-allowed');
-
-                elem.classList.add('bg-green-700');
+            "addDotToNumber": function (number) {
+                return (new Intl.NumberFormat('id-Id', {"maximumSignificantDigits": 3}).format(number));
             },
             "getApiRequest": function (to, params = null) {
                 return axios
@@ -296,21 +245,21 @@ $listTakaran = app()->getManager()->getService('KelolaTakaran')->listTakaran();
                     "sites": {
                         "api_url": "<?= site_url() ?>",
                         "query_title": null,
-                        "button_title": 'Tambahkan Jenis Beras Baru',
-                        "show_password_input": true
+                        "button_title": 'Tambahkan Jenis Beras Baru'
                     },
                     "messages": {
                         "errors": [],
                         "normal": []
                     },
                     "data": {
-                        "list_beras": JSON.parse('<?= json_encode(array_map(fn ($item) => $item->toArray(), $listBeras)) ?>'),
-                        "list_takaran": JSON.parse('<?= json_encode(array_map(fn ($item) => $item->toArray(), $listTakaran)) ?>'),
+                        "list_stok_beras": JSON.parse('<?= json_encode($listStokBeras) ?>'),
                     },
                     "form": {
-                        'id' : -1,
-                        'jenis': '',
-                        'takaran': [],
+                        'beras_id' : -1,
+                        'takaran_id': -1,
+                        'harga': 0,
+                        'stok': 0,
+                        'selected_string': '-',
                     }
                 },
                 "init": function() {}
