@@ -1,15 +1,5 @@
 <?php
 
-/*
-TODO: menampilkan seluruh produk (done)
-TODO: mengganti gambar
-TODO: memilih produk dan menampilkan di form input jumlah beli (done)
-TODO: menambahkan item ke keranjang (done)
-TODO: merubah jumlah beli (done)
-TODO: menghapus item dari keranjang (done)
-TODO: validasi jumlah beli tidak boleh lebih dari stok tersedia
-*/
-
 if (false === session()->isAuthenticatedAs('pelanggan')) html_unauthorized();
 $listBeras = app()->getManager()->getService('KelolaStok')->listStokBeras();
 
@@ -188,44 +178,7 @@ $listBeras = app()->getManager()->getService('KelolaStok')->listStokBeras();
 </main>
 <script type="text/javascript">
     document.addEventListener('alpine:init', () => {
-        // @TODO: separate to file
         const actions = {
-            "simpanData": function () {
-                this.clearMassage();
-                let alpineObj = this;
-
-                this.postData(
-                    '/api/beras/create',
-                    this.createFormData({
-                        'id': this.properties.form.id,
-                        'jenis': this.properties.form.jenis,
-                        'harga': this.properties.form.harga,
-                        'stok': this.properties.form.stok,
-                    }),
-                    function (response) {
-                        if (alpineObj.properties.form.id < 0) { // saved
-                            alpineObj.properties.data.list_beras.push(response.data.data);
-                            alpineObj.properties.form.jenis = "";
-                            alpineObj.properties.form.harga = 0;
-                            alpineObj.properties.form.stok = 0;
-                            alpineObj.addNormalMessage('form_response', `Berhasil! Data (Beras: ${response.data.data.jenis}) telah disimpan.`);
-
-                            return;
-                        }
-
-                        // updated
-                        let index = alpineObj.properties.data.list_beras.findIndex(item => item.id == response.data.data.id);
-                        alpineObj.properties.data.list_beras[index].jenis = response.data.data.jenis;
-                        alpineObj.properties.data.list_beras[index].stok = response.data.data.stok;
-                        alpineObj.properties.data.list_beras[index].harga = response.data.data.harga;
-
-                        alpineObj.addNormalMessage('form_response', `Berhasil! Data (Beras: ${response.data.data.jenis}) telah diperbaharui.`);
-                    },
-                    function (err) {
-                        alpineObj.addErrorMassage('bad_request', 'Gagal dalam menyimpan, mohon periksa data dan coba lagi.')
-                    }
-                )
-            },
             "hapusItemDariKeranjang": function (item) {
                 if(!confirm('Anda yakin ingin menghapus data ini ?')) return;
 
@@ -342,26 +295,6 @@ $listBeras = app()->getManager()->getService('KelolaStok')->listStokBeras();
             },
             "addDotToNumber": function (number) {
                 return (new Intl.NumberFormat('id-Id', {"maximumSignificantDigits": 3}).format(number));
-            },
-            "buttonLoading": function(elem, statusText = 'Mohon Tunggu') {
-                elem.disabled = true;
-                elem.innerText = statusText;
-                elem.classList.add('bg-gray-700');
-                elem.classList.add('hover:bg-gray-700');
-                elem.classList.add('focus:ring-gray-700');
-                elem.classList.add('opacity-80');
-                elem.classList.add('cursor-not-allowed');
-            },
-            "buttonRemoveLoading": function (elem, statusText, success = 'bg-green-700') {
-                elem.disabled = false;
-                elem.innerText = statusText;
-                elem.classList.remove('bg-gray-700');
-                elem.classList.remove('hover:bg-gray-700');
-                elem.classList.remove('focus:ring-gray-700');
-                elem.classList.remove('opacity-80');
-                elem.classList.remove('cursor-not-allowed');
-
-                elem.classList.add('bg-green-700');
             },
             "getApiRequest": function (to, params = null) {
                 return axios
