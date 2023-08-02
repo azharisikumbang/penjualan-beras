@@ -2,7 +2,7 @@
 
 class Pengiriman
 {
-    public function __construct(private string $alamat)
+    public function __construct(private string $alamat = "")
     {}
 
     /**
