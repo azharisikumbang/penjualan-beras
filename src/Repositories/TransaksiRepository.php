@@ -17,7 +17,7 @@ class TransaksiRepository extends BaseRepository
     protected function toEntity(array $rows): Transaksi
     {
         $transaksi = new Transaksi();
-        $transaksi->setId($rows['is']);
+        $transaksi->setId($rows['id']);
         $transaksi->setNamaPembayaran($rows['nama_pembayaran']);
         $transaksi->setBankPembayaran($rows['bank_pembayaran']);
         $transaksi->setTanggalPembayaran(date_create($rows['tanggal_pembayaran']));
@@ -35,10 +35,8 @@ class TransaksiRepository extends BaseRepository
 
         if(false === $pesananRepository->exists($pesanan->getId())) return false;
 
-        $transaksi->setPesanan($pesanan);
-
         return parent::basicSave($transaksi, [
-            'tanggal_pembayaran' => $transaksi->getTanggalPembayaran()->format('Y-m-d H:i:s'),
+            'tanggal_pembayaran' => $transaksi->getTanggalPembayaran()?->format('Y-m-d H:i:s'),
             'bank_pembayaran' => $transaksi->getBankPembayaran(),
             'nama_pembayaran' => $transaksi->getNamaPembayaran(),
             'nominal_dibayarkan' => $transaksi->getNominalDibayarkan(),

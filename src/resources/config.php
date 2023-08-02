@@ -14,5 +14,7 @@ return [
         'database' => 'bumdus_kanterleans',
         'port' => 3306
     ],
-    'disk' => []
+    'disk' => [
+        'bukti_pembayaran' => __DIR__ . '/../storages/bukti-pembayaran/'
+    ]
 ];

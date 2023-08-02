@@ -7,7 +7,7 @@ require_once __DIR__ . '/../Enum/StatusPembayaran.php';
 
 class Transaksi implements EntityInterface
 {
-    private ?int $id;
+    private ?int $id = null;
 
     private ?DateTimeInterface $tanggalPembayaran;
 
@@ -34,7 +34,7 @@ class Transaksi implements EntityInterface
     /**
      * @param int $id
      */
-    public function setId(int $id): void
+    public function setId(?int $id): void
     {
         $this->id = $id;
     }
@@ -58,7 +58,7 @@ class Transaksi implements EntityInterface
     /**
      * @return string
      */
-    public function getNamaPembayaran(): string
+    public function getNamaPembayaran(): null|string
     {
         return $this->namaPembayaran;
     }
@@ -66,7 +66,7 @@ class Transaksi implements EntityInterface
     /**
      * @param string $namaPembayaran
      */
-    public function setNamaPembayaran(string $namaPembayaran): void
+    public function setNamaPembayaran(null|string $namaPembayaran): void
     {
         $this->namaPembayaran = $namaPembayaran;
     }
@@ -74,7 +74,7 @@ class Transaksi implements EntityInterface
     /**
      * @return string
      */
-    public function getBankPembayaran(): string
+    public function getBankPembayaran(): null|string
     {
         return $this->bankPembayaran;
     }
@@ -82,7 +82,7 @@ class Transaksi implements EntityInterface
     /**
      * @param string $bankPembayaran
      */
-    public function setBankPembayaran(string $bankPembayaran): void
+    public function setBankPembayaran(null|string $bankPembayaran): void
     {
         $this->bankPembayaran = $bankPembayaran;
     }
@@ -106,7 +106,7 @@ class Transaksi implements EntityInterface
     /**
      * @return string
      */
-    public function getFileBuktiPembayaran(): string
+    public function getFileBuktiPembayaran(): null|string
     {
         return $this->fileBuktiPembayaran;
     }
@@ -114,7 +114,7 @@ class Transaksi implements EntityInterface
     /**
      * @param string $fileBuktiPembayaran
      */
-    public function setFileBuktiPembayaran(string $fileBuktiPembayaran): void
+    public function setFileBuktiPembayaran(null|string $fileBuktiPembayaran): void
     {
         $this->fileBuktiPembayaran = $fileBuktiPembayaran;
     }
@@ -155,12 +155,14 @@ class Transaksi implements EntityInterface
     {
         return [
             'id' => $this->getId(),
-            'tanggal_pembayaran' => $this->getTanggalPembayaran()->format('Y-m-d H:i:s'),
+            'tanggal_pembayaran' => $this->getTanggalPembayaran()?->format('Y-m-d H:i:s'),
             'nama_pembayaran' => $this->getNamaPembayaran(),
             'bank_pembayaran' => $this->getBankPembayaran(),
             'nominal_dibayarkan' => $this->getNominalDibayarkan(),
-            'status_pembayaran' => $this->getStatusPembayaran()->value,
-            'konfirmasi_pembayaran' => $this->getKonfirmasiPembayaran()->value,
+            'status_pembayaran' => $this->getStatusPembayaran()->getDisplay(),
+            'status_pembayaran_color' => $this->getStatusPembayaran()->getColor(),
+            'konfirmasi_pembayaran' => $this->getKonfirmasiPembayaran()->getDisplay(),
+            'konfirmasi_pembayaran_color' => $this->getKonfirmasiPembayaran()->getColor(),
             'file_bukti_pembayaran' => $this->getFileBuktiPembayaran()
         ];
     }
@@ -168,6 +170,7 @@ class Transaksi implements EntityInterface
     public static function makeEmpty()
     {
         $transaksi = new Transaksi();
+        $transaksi->setId(null);
         $transaksi->setStatusPembayaran(StatusPembayaran::BELUM_BAYAR);
         $transaksi->setKonfirmasiPembayaran(KonfirmasiPembayaran::BELUM_BAYAR);
         $transaksi->setFileBuktiPembayaran(null);
