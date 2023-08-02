@@ -148,12 +148,20 @@ class Keranjang
                 $keranjangItem->setKey($item['key']);
 
                 $beras = new Beras();
-                $beras->setId($item['detail']['id']);
-                $beras->setJenis($item['detail']['jenis']);
-                $beras->setStok($item['detail']['stok']);
-                $beras->setHarga($item['detail']['harga']);
+                $beras->setId($item['detail']['beras_id']);
+                $beras->setJenis($item['detail']['relations']['beras']['jenis']);
 
-                $keranjangItem->setBeras($beras);
+                $takaran = new Takaran();
+                $takaran->setId($item['detail']['takaran_id']);
+                $takaran->setVariant($item['detail']['relations']['takaran']['variant']);
+
+                $stok = Stok::makeEmpty($beras, $takaran);
+                $stok->setTakaranId($item['detail']['takaran_id']);
+                $stok->setBerasId($item['detail']['beras_id']);
+                $stok->setStok($item['detail']['jumlah_stok']);
+                $stok->setHarga($item['detail']['harga']);
+
+                $keranjangItem->setDetail($stok);
                 $keranjangItem->setTotalHarga($item['total_harga']);
                 $keranjangItem->setJumlahBeli($item['jumlah_beli']);
 

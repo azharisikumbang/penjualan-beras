@@ -4,7 +4,7 @@ class Item
 {
     private string $key;
 
-    private Beras $detail;
+    private Stok $detail;
 
     private int $jumlahBeli;
 
@@ -24,22 +24,6 @@ class Item
     public function setKey(string $key): void
     {
         $this->key = $key;
-    }
-
-    /**
-     * @return Beras
-     */
-    public function getBeras(): Beras
-    {
-        return $this->detail;
-    }
-
-    /**
-     * @param Beras $detail
-     */
-    public function setBeras(Beras $detail): void
-    {
-        $this->detail = $detail;
     }
 
     /**
@@ -74,20 +58,36 @@ class Item
         $this->totalHarga = $totalHarga;
     }
 
+    /**
+     * @return Stok
+     */
+    public function getDetail(): Stok
+    {
+        return $this->detail;
+    }
+
+    /**
+     * @param Stok $detail
+     */
+    public function setDetail(Stok $detail): void
+    {
+        $this->detail = $detail;
+    }
+
     public function updateTotalHarga()
     {
-        $total = $this->getBeras()->getHarga() * $this->getJumlahBeli();
+        $total = $this->getDetail()->getHarga() * $this->getJumlahBeli();
         $this->setTotalHarga($total);
     }
 
-    public static function create(Beras $detail, int $jumlahBeli = 1)
+    public static function create(Stok $stok, int $jumlahBeli = 1)
     {
         $item = new Item();
         $item->setKey($item->createKey());
-        $item->setBeras($detail);
+        $item->setDetail($stok);
         $item->setJumlahBeli($jumlahBeli);
         $item->setTotalHarga(
-            $detail->getHarga() * $jumlahBeli
+            $stok->getHarga() * $jumlahBeli
         );
 
         return $item;
@@ -102,7 +102,7 @@ class Item
     {
         return [
             'key' => $this->getKey(),
-            'detail' => $this->getBeras()?->toArray(),
+            'detail' => $this->getDetail()->toArray(),
             'total_harga' => $this->getTotalHarga(),
             'jumlah_beli' => $this->getJumlahBeli()
         ];

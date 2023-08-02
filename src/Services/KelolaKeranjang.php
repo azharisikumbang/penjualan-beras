@@ -3,22 +3,17 @@
 require_once __DIR__ . '/../Object/Keranjang/Keranjang.php';
 require_once __DIR__ . '/../Object/Keranjang/Item.php';
 require_once __DIR__ . '/../Repositories/BerasRepository.php';
+require_once __DIR__ . '/../Repositories/TakaranRepository.php';
+require_once __DIR__ . '/../Repositories/StokRepository.php';
 
 class KelolaKeranjang
 {
-    private BerasRepository $berasRepository;
-
-    public function __construct()
-    {
-        $this->berasRepository = new BerasRepository();
-    }
-
     public function buatKeranjangKosong() : Keranjang
     {
         return new Keranjang();
     }
 
-    public function tambahkanProdukKeKeranjang(?string $key, int|Beras $beras, int $jumlahBeli): Keranjang
+    public function tambahkanProdukKeKeranjang(?string $key, int|Beras $beras, int|Takaran $takaran, int $jumlahBeli): Keranjang
     {
         /** @var $keranjang Keranjang */
         $keranjang = $this->get();
@@ -33,9 +28,25 @@ class KelolaKeranjang
             return $keranjang;
         }
 
-        $beras = is_int($beras) ? $this->berasRepository->findById($beras) : $beras;
-        if(!$beras) return $keranjang;
-        $item = Item::create($beras, $jumlahBeli);
+        if(is_int($beras)) {
+            $berasRepository = new BerasRepository();
+            $beras = $berasRepository->findById($beras);
+
+            if(!$beras) return $keranjang;
+        }
+
+        if(is_int($takaran)) {
+            $berasRepository = new TakaranRepository();
+            $takaran = $berasRepository->findById($takaran);
+
+            if(!$takaran) return $keranjang;
+        }
+
+        $stokRepository = new StokRepository();
+        $stok = $stokRepository->findByBerasAndTakaran($beras, $takaran);
+        if (is_null($stok)) return $keranjang;
+
+        $item = Item::create($stok, $jumlahBeli);
         $keranjang->addItem($item);
         session()->add('keranjang', $keranjang->toArray());
 

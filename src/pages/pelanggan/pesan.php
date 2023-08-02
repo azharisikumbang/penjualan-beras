@@ -5,13 +5,13 @@ TODO: menampilkan seluruh produk (done)
 TODO: mengganti gambar
 TODO: memilih produk dan menampilkan di form input jumlah beli (done)
 TODO: menambahkan item ke keranjang (done)
-TODO: merubah jumlah beli
-TODO: menghapus item dari keranjang
+TODO: merubah jumlah beli (done)
+TODO: menghapus item dari keranjang (done)
 TODO: validasi jumlah beli tidak boleh lebih dari stok tersedia
 */
 
 if (false === session()->isAuthenticatedAs('pelanggan')) html_unauthorized();
-$listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
+$listBeras = app()->getManager()->getService('KelolaStok')->listStokBeras();
 
 ?>
 <main x-data="container">
@@ -54,60 +54,100 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
                     </form>
                     <div class="flex items-center">
                         <span>Urutkan:</span>
-                        <select name="" id="" class="cursor-pointer outline-none">
+                        <select @change="sortItem" class="cursor-pointer outline-none">
                             <option value="1">nama jenis beras (A-Z)</option>
                             <option value="2">harga terendah ke tertinggi
-                            <option value="2">harga tertinggi ke terendah</option>
+                            <option value="3">harga tertinggi ke terendah</option>
                         </select>
                     </div>
                 </div>
-                <div class="grid grid-cols-3 gap-4">
                 <?php if($listBeras): ?>
-                <template x-for="beras in properties.data.list_beras">
-                    <div class="w-full max-w-sm bg-white border border-gray-200 rounded">
-                        <div class="w-full h-48 relative">
-                            <img class="object-cover w-full h-full rounded-t" src="<?= site_url('assets/static/no-image.jpg') ?>" alt="product image" />
-                            <span class="absolute top-2 left-2 z-10 px-2 bg-green-600 text-sm text-white rounded" x-show="beras.stok_tersedia">
-                                Stok: <span x-text="addDotToCurrentcy(beras.stok)"></span> kg
-                            </span>
-                            <span class="absolute top-2 left-2 z-10 px-2 bg-red-600 text-sm text-white italic rounded" x-show="!beras.stok_tersedia">Stok Kosong</span>
-                        </div>
-                        <div class="p-4">
-                            <a href="#">
-                                <h5 class="font-semibold text-xl text-gray-900" x-text="beras.jenis"></h5>
-                            </a>
-                            <div class="flex items-center justify-between">
-                                <p class="text-gray-500"><span x-text="currencyToRupiah(beras.harga)"></span>/kg</p>
-                                <button x-show="beras.stok_tersedia" @click="selectProduct(beras)"  type="button" class="text-sm text-white bg-orange-500 rounded px-4 py-1 hover:bg-orange-600 text-center">Pilih</button>
-                            </div>
-                        </div>
-                    </div>
-                </template>
+                    <table class="w-full my-4">
+                        <thead class="bg-gray-100 dark:bg-gray-700">
+                        <tr>
+                            <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
+                                No
+                            </th>
+                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase">
+                                Jenis Beras (Takaran)
+                            </th>
+                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase">
+                                Harga (Rupiah)
+                            </th>
+                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase">
+                                Stok Tersedia (kg)
+                            </th>
+                            <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                        <template x-for="(item, index) in properties.data.list_stok_beras" :key="index">
+                            <tr>
+                                <td class="w-4 p-4" x-text="index + 1"></td>
+                                <td class="p-4 whitespace-nowrap">
+                                    <span class="text-base font-semibold text-gray-900 dark:text-white" x-text="item.relations.beras.jenis"></span>
+                                    ( takaran: <span class="" x-text="item.relations.takaran.variant.toUpperCase()"></span> )
+                                </td>
+                                <td class="p-4 whitespace-nowrap">
+                                    <p class="text-base text-gray-600">
+                                        <span class="" x-text="currencyToRupiah(item.harga)"></span>
+                                    </p>
+                                </td>
+                                <td class="p-4 whitespace-nowrap">
+                                    <p class="text-base text-gray-600">
+                                        <span class="" x-text="addDotToNumber(item.jumlah_stok)"></span> Kg
+                                    </p>
+                                </td>
+                                <td class="p-4 space-x-2 whitespace-nowrap flex justify-end">
+                                    <button @click="selectProduct(item)" type="button" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white rounded-lg bg-blue-500 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300">
+                                        <svg class="w-4 h-4 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 21">
+                                            <path d="M15 14H7.78l-.5-2H16a1 1 0 0 0 .962-.726l.473-1.655A2.968 2.968 0 0 1 16 10a3 3 0 0 1-3-3 3 3 0 0 1-3-3 2.97 2.97 0 0 1 .184-1H4.77L4.175.745A1 1 0 0 0 3.208 0H1a1 1 0 0 0 0 2h1.438l.6 2.255v.019l2 7 .746 2.986A3 3 0 1 0 10 17a2.966 2.966 0 0 0-.184-1h2.368c-.118.32-.18.659-.184 1a3 3 0 1 0 3-3Zm-8 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm8 0a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+                                            <path d="M19 3h-2V1a1 1 0 0 0-2 0v2h-2a1 1 0 1 0 0 2h2v2a1 1 0 0 0 2 0V5h2a1 1 0 1 0 0-2Z"/>
+                                        </svg>
+                                        Pilih
+                                    </button>
+                                </td>
+                            </tr>
+                        </template>
+                        </tbody>
+                    </table>
                 <?php else: ?>
                 <div class="text-center py-4">Tidak ada data.</div>
                 <?php endif; ?>
-                </div>
             </div>
             <div class="ml-4">
-                <div class="rounded border border-blue-600 p-4 mb-4 text-blue-600">
-                    <strong>Informasi Pembelian !</strong>
-                    <p>Anda bisa mendapatkan harga khusus untuk pembelian diatas 10kg yang akan dihitung pada langkah berikutnya.</p>
+                <div class="rounded border text-blue-600 border-blue-600 p-2 mb-2">
+                    <strong>Informasi:</strong>
+                    <p class="text-sm">- Kolom <b>*jumlah beli</b> diisi jumlah pembelian dalam satuan takaran. </p>
+                    <p class="text-sm">- <b>Sub-Total</b> dihitung berdasarkan banyak jumlah beli dengan harga per takaran. </p>
                 </div>
-                <div class="border rounded border-gray-300 p-4 grid grid-cols-3 gap-4 items-center mb-4">
-                    <div>
-                        <p class="font-semibold text-lg text-gray-900" x-text="properties.form.selected.jenis"></p>
-                        <p class="text-sm text-gray-500"><span x-text="currencyToRupiah(properties.form.selected.harga)"></span> /kg</p>
+                <div class="border rounded border-gray-300 p-4 mb-4">
+                    <div class="flex justify-between gap-4 items-center">
+                        <div class="col-span-2">
+                            <p class="font-semibold text-lg text-gray-900" x-text="properties.form.selected.beras_jenis"></p>
+                            <p class="text-sm text-gray-500"><span x-text="currencyToRupiah(properties.form.selected.harga)"></span> / takaran</p>
+                        </div>
+                        <div class="gap-1 w-48 grid-cols-5 grid items-center">
+                            <input @keyup="countTotal" x-model="properties.form.selected.jumlah_beli" type="number" class="col-span-3 border border-gray-300 rounded bg-gray-100 px-2 py-1 outline-none focus:border-gray-400" placeholder="jumlah beli*">
+                            <small class="col-span-2">
+                                x <span x-text="properties.form.selected.takaran_variant"></span>
+                            </small>
+                        </div>
                     </div>
-                    <div class="flex items-center gap-1">
-                        <input @keyup="countTotal" x-model="properties.form.selected.jumlah_beli" type="number" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 outline-none focus:border-gray-400" placeholder="jumlah beli (kg)">
-                        <span>kg</span>
+                    <div class="flex justify-between items-center border-t border-gray-300 py-2 mt-4">
+                        <div class="text-sm">
+                            <span>Takaran: </span>
+                            <span x-text="properties.form.selected.takaran_variant.toUpperCase()"></span> |
+                            <span>Stok: </span>
+                            <span x-text="addDotToNumber(properties.form.selected.stok)"></span> Kg
+                        </div>
+                        <div class="text-right font-semibold">
+                            <span>Sub-Total: </span>
+                            <span x-text="currencyToRupiah(properties.form.selected.total)"></span>
+                        </div>
                     </div>
-                    <div class="text-right font-semibold">
-                        <p x-text="currencyToRupiah(properties.form.selected.total)"></p>
-                    </div>
-                    <div class="col-span-3 ">
-                        <button @click="tambahkanKeKeranjang" type="button" class="text-sm w-full text-white bg-gray-500 rounded py-2 px-4 hover:bg-gray-600 text-center">Simpan Ke Keranjang</button>
-                    </div>
+                    <button @click="tambahkanKeKeranjang" type="button" class="text-sm w-full text-white bg-gray-500 rounded py-2 px-4 hover:bg-gray-600 text-center">Simpan Ke Keranjang</button>
                 </div>
                 <div class="border rounded border-gray-300 p-4 mb-4">
                     <p class="font-semibold text-lg text-gray-900 pb-1 mb-1">Keranjang Belanja</p>
@@ -115,15 +155,21 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
                         <template x-for="item in properties.data.list_keranjang.items">
                             <div class="flex justify-between border-b pb-1 mb-2">
                                 <div>
-                                    <p class="text-gray-600"><span x-text="item.detail.jenis"></span>@<span x-text="currencyToRupiah(item.detail.harga)"></span> x <span x-text="addDotToCurrentcy(item.jumlah_beli)"></span>kg</p>
+                                    <div class="text-gray-600 font-semibold">
+                                        <span x-text="item.detail.relations.beras.jenis"></span>
+                                        <small>(takaran: <span x-text="item.detail.relations.takaran.variant"></span>)</small>
+                                    </div>
+                                    <div class="text-sm italic text-gray-400">
+                                        dipesan: <span x-text="item.jumlah_beli"></span> x <span x-text="item.detail.relations.takaran.variant"></span>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p x-text="currencyToRupiah(item.total_harga)"></p>
                                     <div class="text-sm text-red-500">
                                         <button @click="editItemKeranjang(item)" type="button" class=" hover:underline">Ubah</button>
                                         -
                                         <button @click="hapusItemDariKeranjang(item)" type="button" class=" hover:underline">Hapus</button>
                                     </div>
-                                </div>
-                                <div>
-                                    <p x-text="currencyToRupiah(item.total_harga)"></p>
                                 </div>
                             </div>
                         </template>
@@ -133,7 +179,7 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
                         </div>
                     </div>
                     <div>
-                        <button class="text-sm w-full text-white bg-green-500 rounded py-2 px-4 hover:bg-green-600 text-center">Pesan Sekarang</button>
+                        <a href="<?= site_url('pelanggan/keranjang') ?>" class="block text-sm w-full text-white bg-green-500 rounded py-2 px-4 hover:bg-green-600 text-center">Pesan Sekarang</a>
                     </div>
                 </div>
             </div>
@@ -144,18 +190,6 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
     document.addEventListener('alpine:init', () => {
         // @TODO: separate to file
         const actions = {
-            "cari": function () {
-                alert('not-implemented');
-            },
-            "editData": function (item) {
-                this.properties.form.id = item.id;
-                this.properties.form.jenis = item.jenis;
-                this.properties.form.harga = item.harga;
-                this.properties.form.stok = item.stok;
-
-                this.properties.sites.query_title = `(dipilih: ${item.jenis})`;
-                this.properties.sites.button_title = 'Perbaharui Data Beras';
-            },
             "simpanData": function () {
                 this.clearMassage();
                 let alpineObj = this;
@@ -212,12 +246,18 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
                 )
             },
             "selectProduct": function (selected) {
-                this.properties.form.selected.id = selected.id;
-                this.properties.form.selected.jenis = selected.jenis;
+                this.properties.form.selected.key = '';
+                this.properties.form.selected.beras_id = selected.beras_id;
+                this.properties.form.selected.takaran_id = selected.takaran_id;
+                this.properties.form.selected.beras_jenis = selected.relations.beras.jenis;
+                this.properties.form.selected.takaran_variant = selected.relations.takaran.variant;
                 this.properties.form.selected.harga = selected.harga;
-                this.properties.form.selected.stok = selected.stok;
+                this.properties.form.selected.stok = selected.jumlah_stok;
 
-                let indexInKeranjang = this.properties.data.list_keranjang.items.findIndex(el => el.detail.id == selected.id);
+                let indexInKeranjang = this.properties.data.list_keranjang.items.findIndex(el => {
+                    return el.detail.beras_id == selected.beras_id && el.detail.takaran_id == selected.takaran_id;
+                });
+
                 if(indexInKeranjang !== -1) {
                     this.editItemKeranjang(this.properties.data.list_keranjang.items[indexInKeranjang]);
 
@@ -228,21 +268,30 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
                 this.countTotal()
             },
             "countTotal": function () {
-                this.properties.form.selected.total = this.properties.form.selected.jumlah_beli * this.properties.form.selected.harga
+                this.properties.form.selected.total = this.properties.form.selected.jumlah_beli * this.properties.form.selected.harga;
             },
             "tambahkanKeKeranjang": function () {
-                if (this.properties.form.selected.id < 1) return;
+                if (this.properties.form.selected.beras_id < 1 || this.properties.form.selected.takaran_id < 1) return;
 
                 let alpineObj = this;
                 this.postData(
                     '/api/keranjang/add',
                     this.createFormData({
-                        'beras': this.properties.form.selected.id,
+                        'beras': this.properties.form.selected.beras_id,
+                        'takaran': this.properties.form.selected.takaran_id,
                         'jumlah_beli': this.properties.form.selected.jumlah_beli,
                         'key': this.properties.form.selected.key
                     }),
                     function (response) {
                         alpineObj.properties.data.list_keranjang = response.data.data;
+                        alpineObj.properties.form.selected.key = '';
+                        alpineObj.properties.form.selected.beras_id = -1;
+                        alpineObj.properties.form.selected.takaran_id = -1;
+                        alpineObj.properties.form.selected.beras_jenis = '-';
+                        alpineObj.properties.form.selected.takaran_variant = '0 Kg';
+                        alpineObj.properties.form.selected.harga = 0;
+                        alpineObj.properties.form.selected.stok = 0;
+                        alpineObj.properties.form.selected.jumlah_beli = 0;
                     },
                     function (err) {
                         alpineObj.addErrorMassage('bad_request', 'Gagal dalam menyimpan, mohon periksa data dan coba lagi.')
@@ -253,14 +302,31 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
                 this.properties.data.list_keranjang = (await this.getApiRequest('/api/keranjang/list')).data;
             },
             "editItemKeranjang": function (item) {
-                this.properties.form.selected.id = item.detail.id;
-                this.properties.form.selected.jenis = item.detail.jenis;
+                this.properties.form.selected.beras_id = item.detail.beras_id;
+                this.properties.form.selected.takaran_id = item.detail.takaran_id;
+                this.properties.form.selected.beras_jenis = item.detail.relations.beras.jenis;
+                this.properties.form.selected.takaran_variant = item.detail.relations.takaran.variant;
                 this.properties.form.selected.harga = item.detail.harga;
-                this.properties.form.selected.stok = item.detail.stok;
+                this.properties.form.selected.stok = item.detail.jumlah_stok;
                 this.properties.form.selected.key = item.key;
 
                 this.properties.form.selected.jumlah_beli = item.jumlah_beli;
                 this.countTotal()
+            },
+            "sortItem": function () {
+                const selected = this.$event.target.value;
+
+                switch (selected) {
+                    case '1' :
+                        this.properties.data.list_beras.sort((a, b) => ('' + a.jenis).localeCompare(b.jenis));
+                        break;
+                    case '2' :
+                        this.properties.data.list_beras.sort((a, b) => a.harga - b.harga);
+                        break;
+                    case '3' :
+                        this.properties.data.list_beras.sort((a, b) => b.harga - a.harga);
+                        break;
+                }
             }
         };
 
@@ -272,9 +338,9 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
                 return date.toLocaleDateString('id-ID',  { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             },
             "currencyToRupiah": function (number) {
-                return 'Rp ' + this.addDotToCurrentcy(number);
+                return 'Rp ' + this.addDotToNumber(number);
             },
-            "addDotToCurrentcy": function (number) {
+            "addDotToNumber": function (number) {
                 return (new Intl.NumberFormat('id-Id', {"maximumSignificantDigits": 3}).format(number));
             },
             "buttonLoading": function(elem, statusText = 'Mohon Tunggu') {
@@ -355,16 +421,19 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
                         "normal": []
                     },
                     "data": {
-                        "list_beras": JSON.parse('<?= json_encode(array_map(fn ($item) => $item->toArray(), $listBeras)) ?>'),
+                        "list_stok_beras": JSON.parse('<?= json_encode($listBeras) ?>'),
                         "list_keranjang": {}
                     },
                     "form": {
                         "selected": {
-                            'id' : -1,
-                            'jenis': '-',
+                            'beras_id' : -1,
+                            'takaran_id' : -1,
+                            'beras_jenis': '-',
+                            'takaran_variant': '-',
                             'harga': 0,
                             'stok': 0,
                             'jumlah_beli': 0,
+                            'jumlah_stok_beli': 0,
                             'total': 0,
                             'key': null
                         }
@@ -372,6 +441,7 @@ $listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
                 },
                 "init": function() {
                     this.loadKeranjang();
+                    // this.properties.data.list_beras.sort((a, b) => ('' + a.jenis).localeCompare(b.jenis));
                 }
             })
         );
