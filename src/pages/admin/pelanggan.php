@@ -87,7 +87,6 @@ $listPelanggan = $service->listPelanggan();
 </main>
 <script type="text/javascript">
     document.addEventListener('alpine:init', () => {
-        // @TODO: separate to file
         const actions = {};
 
         const utils = {};

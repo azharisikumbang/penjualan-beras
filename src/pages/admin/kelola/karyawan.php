@@ -136,11 +136,7 @@ $listKaryawan = $service->listKaryawan();
 </main>
 <script type="text/javascript">
     document.addEventListener('alpine:init', () => {
-        // @TODO: separate to file
-        const actions = {
-            "cari": function () {
-                alert('not-implemented');
-            },
+        const actions = {,
             "editData": function (item) {
                 this.properties.form.id = item.id;
                 this.properties.form.nama = item.nama;

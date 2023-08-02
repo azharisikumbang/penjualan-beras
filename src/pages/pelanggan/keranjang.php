@@ -1,15 +1,5 @@
 <?php
 
-/*
-TODO: menampilkan seluruh produk (done)
-TODO: mengganti gambar
-TODO: memilih produk dan menampilkan di form input jumlah beli (done)
-TODO: menambahkan item ke keranjang (done)
-TODO: merubah jumlah beli
-TODO: menghapus item dari keranjang
-TODO: validasi jumlah beli tidak boleh lebih dari stok tersedia
-*/
-
 if (false === session()->isAuthenticatedAs('pelanggan')) html_unauthorized();
 /** @var $keranjang Keranjang */
 $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
@@ -157,7 +147,6 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
 </main>
 <script type="text/javascript">
     document.addEventListener('alpine:init', () => {
-        // @TODO: separate to file
         const actions = {
             "simpanPesanan": function () {
                 let alpineObj = this;

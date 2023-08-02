@@ -128,7 +128,6 @@ $listTakaran = $service->listTakaran();
 </main>
 <script type="text/javascript">
     document.addEventListener('alpine:init', () => {
-        // @TODO: separate to file
         const actions = {
             "editData": function (item) {
                 this.properties.form.id = item.id;

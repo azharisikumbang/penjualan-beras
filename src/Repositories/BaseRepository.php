@@ -8,8 +8,7 @@ abstract class BaseRepository
 
     protected function getDatabaseConnection() : ?PDO
     {
-        // TODO: Implement database connection
-         return $this->db ?? app()->getManager()->getDatabaseManager()->getInstance();
+        return $this->db ?? app()->getManager()->getDatabaseManager()->getInstance();
     }
 
     public function findById(int $id): ?EntityInterface

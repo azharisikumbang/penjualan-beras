@@ -121,7 +121,6 @@ if(false === $valid) response()->notFound();
 </main>
 <script type="text/javascript">
     document.addEventListener('alpine:init', () => {
-        // @TODO: separate to file
         const actions = {
             "simpanData": function () {
                 this.clearMassage();

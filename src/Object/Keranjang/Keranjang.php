@@ -100,7 +100,7 @@ class Keranjang
 
     public function addItem(Item $item) : false|Item
     {
-        if($this->exists($item->getKey())) return false; // TODO: should be update jumlah_beli
+        if($this->exists($item->getKey())) return false;
         $this->items[] = $item;
         $this->updateTotal();
 
