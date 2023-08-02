@@ -4,7 +4,7 @@ enum Role : string
 {
     case ADMIN = 'admin';
 
-    case PELANGGAN = 'pelangggan';
+    case PELANGGAN = 'pelanggan';
 
     case KARYAWAN = 'karyawan';
 
@@ -24,7 +24,7 @@ enum Role : string
     {
         return match ($this) {
             Role::KARYAWAN => 'karyawan',
-            Role::PELANGGAN => 'pelanggan',
+            Role::PELANGGAN => 'pelanggan/beranda',
             Role::ADMIN => 'admin',
             default => 'public'
         };
