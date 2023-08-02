@@ -9,6 +9,8 @@ class DetailPesanan implements EntityInterface
 
     private string $jenisBeras;
 
+     private string $takaranBeras;
+
     private float $hargaSatuan;
 
     private int $jumlahBeli;
@@ -95,14 +97,31 @@ class DetailPesanan implements EntityInterface
         $this->total = $total;
     }
 
+    /**
+     * @return string
+     */
+    public function getTakaranBeras(): string
+    {
+        return $this->takaranBeras;
+    }
+
+    /**
+     * @param string $takaranBeras
+     */
+    public function setTakaranBeras(string $takaranBeras): void
+    {
+        $this->takaranBeras = $takaranBeras;
+    }
+
     public function toArray(): array
     {
         return [
-          'id' => $this->getId(),
-          'jenis_beras' => $this->getJenisBeras(),
-          'harga_satuan' => $this->getHargaSatuan(),
-          'jumlah_beli' => $this->getJumlahBeli(),
-          'total' => $this->getTotal(),
+            'id' => $this->getId(),
+            'jenis_beras' => $this->getJenisBeras(),
+            'takaran_beras' => $this->getTakaranBeras(),
+            'harga_satuan' => $this->getHargaSatuan(),
+            'jumlah_beli' => $this->getJumlahBeli(),
+            'total' => $this->getTotal(),
         ];
     }
 }

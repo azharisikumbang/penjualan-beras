@@ -64,6 +64,7 @@ CREATE TABLE pesanan(
 CREATE TABLE detail_pesanan(
   id int primary key auto_increment,
   jenis_beras varchar(255) not null,
+  takaran_beras varchar(255) not null,
   harga_satuan decimal(10, 2) default 0,
   jumlah_beli int default 1,
   total decimal(10, 2) default 0,

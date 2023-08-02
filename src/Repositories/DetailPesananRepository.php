@@ -17,14 +17,11 @@ class DetailPesananRepository extends BaseRepository
     protected function toEntity(array $rows): DetailPesanan
     {
         $detailPesanan = new DetailPesanan();
-        $detailPesanan->setId($rows['is']);
-        $detailPesanan->setNamaPembayaran($rows['nama_pembayaran']);
-        $detailPesanan->setBankPembayaran($rows['bank_pembayaran']);
-        $detailPesanan->setTanggalPembayaran(date_create($rows['tanggal_pembayaran']));
-        $detailPesanan->setNominalDibayarkan($rows['nominal_dibayarkan']);
-        $detailPesanan->setStatusPembayaran(StatusPembayaran::from($rows['status_pembayaran']));
-        $detailPesanan->setKonfirmasiPembayaran(KonfirmasiPembayaran::from($rows['konfirmasi_pembayaran']));
-        $detailPesanan->setFileBuktiPembayaran($rows['file_bukti_pemnayaran']);
+        $detailPesanan->setId($rows['id']);
+        $detailPesanan->setTotal($rows['total']);
+        $detailPesanan->setJenisBeras($rows['jenis_beras']);
+        $detailPesanan->setHargaSatuan($rows['harga_satuan']);
+        $detailPesanan->setJumlahBeli($rows['jumlah_beli']);
 
         return $detailPesanan;
     }
@@ -36,6 +33,7 @@ class DetailPesananRepository extends BaseRepository
 
         return parent::basicSave($detailPesanan, [
             'jenis_beras' => $detailPesanan->getJenisBeras(),
+            'takaran_beras' => $detailPesanan->getTakaranBeras(),
             'harga_satuan' => $detailPesanan->getHargaSatuan(),
             'jumlah_beli' => $detailPesanan->getJumlahBeli(),
             'total' => $detailPesanan->getTotal(),

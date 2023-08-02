@@ -37,8 +37,9 @@ class KelolaPesanan
             $detail = new DetailPesanan();
             $detail->setJumlahBeli($item->getJumlahBeli());
             $detail->setTotal($item->getTotalHarga());
-            $detail->setHargaSatuan($item->getBeras()->getHarga());
-            $detail->setJenisBeras($item->getBeras()->getJenis());
+            $detail->setHargaSatuan($item->getDetail()->getHarga());
+            $detail->setJenisBeras($item->getDetail()->getBeras()->getJenis());
+            $detail->setTakaranBeras($item->getDetail()->getTakaran()->getVariant());
 
             $pesanan->addDetailPesanan($detail);
         }
