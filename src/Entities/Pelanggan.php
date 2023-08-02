@@ -16,6 +16,8 @@ class Pelanggan implements EntityInterface
 
     private ?Akun $akun = null;
 
+    private ?int $akunId = null;
+
     /**
      * @return int
      */
@@ -96,6 +98,23 @@ class Pelanggan implements EntityInterface
         $this->akun = $akun;
     }
 
+    /**
+     * @return int|null
+     */
+    public function getAkunId(): ?int
+    {
+        return $this->akunId;
+    }
+
+    /**
+     * @param int|null $akunId
+     */
+    public function setAkunId(?int $akunId): void
+    {
+        $this->akunId = $akunId;
+    }
+
+
     public function toArray(): array
     {
         return array(
@@ -103,7 +122,8 @@ class Pelanggan implements EntityInterface
             'nama' => $this->getNama(),
             'kontak' => $this->getKontak(),
             'alamat' => $this->getAlamat(),
-            'akun' => $this->getAkun()->toArray()
+            'akun' => $this->getAkun()?->toArray(),
+            'akun_id' => $this->getAkunId()
         );
     }
 }
