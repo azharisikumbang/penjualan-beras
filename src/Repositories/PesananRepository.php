@@ -80,6 +80,8 @@ class PesananRepository extends BaseRepository
             $detailPesanan->setHargaSatuan($row['dp_harga_satuan']);
             $detailPesanan->setJumlahBeli($row['dp_jumlah_beli']);
             $detailPesanan->setTakaranBeras($row['dp_takaran_beras']);
+            $detailPesanan->setRefTakaranId($row['dp_ref_takaran_id']);
+            $detailPesanan->setRefBerasId($row['dp_ref_beras_id']);
 
 
             $pesanan->addDetailPesanan($detailPesanan);
@@ -207,10 +209,94 @@ class PesananRepository extends BaseRepository
             $detailPesanan->setHargaSatuan($row['dp_harga_satuan']);
             $detailPesanan->setJumlahBeli($row['dp_jumlah_beli']);
             $detailPesanan->setTakaranBeras($row['dp_takaran_beras']);
+            $detailPesanan->setRefTakaranId($row['dp_ref_takaran_id']);
+            $detailPesanan->setRefBerasId($row['dp_ref_beras_id']);
 
             $pesanan->addDetailPesanan($detailPesanan);
 
             $listPesanan[$pesanan->getNomorPesanan()] = $pesanan;
+        }
+
+        return array_values($listPesanan);
+    }
+
+    public function findWithRelationsWhere(array $searchable, int $total, int $start)
+    {
+        $appendQuery = "";
+        $appendQueryList = [];
+        $whereList = [];
+        if (count($searchable)) {
+            if (isset($searchable['tanggal_pemesanan'])) {
+                $appendQueryList[] = " p.tanggal_pemesanan LIKE :tanggal_pemesanan";
+                $whereList['tanggal_pemesanan'] = $searchable['tanggal_pemesanan'];
+            }
+
+            if (isset($searchable['nomor_pesanan'])) {
+                $appendQueryList[] .= " p.nomor_pesanan = :nomor_pesanan";
+                $whereList['nomor_pesanan'] = $searchable['nomor_pesanan'];
+            }
+
+            if (isset($searchable['status_pembayaran'])) {
+                $appendQueryList[] .= " t.status_pembayaran = :status_pembayaran";
+                $whereList['status_pembayaran'] = $searchable['status_pembayaran'];
+            }
+
+            if (isset($searchable['konfirmasi_pembayaran'])) {
+                $appendQueryList[] .= " t.konfirmasi_pembayaran = :konfirmasi_pembayaran";
+                $whereList['konfirmasi_pembayaran'] = $searchable['konfirmasi_pembayaran'];
+            }
+
+            $appendQuery = "WHERE";
+            $appendQuery .= implode(" AND ", $appendQueryList);
+            $appendQuery .= " ORDER BY p.tanggal_pemesanan LIMIT {$total} OFFSET {$start}";
+        }
+
+        $query = $this->queryGetWithRelations($appendQuery);
+        $stmt = $this->execute($query, $whereList);
+
+        if($stmt->rowCount() < 1) return [];
+
+        $listPesanan = [];
+        $pesanan = null;
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if(is_null($pesanan) || $pesanan->getId() != $row['id']) {
+                $pesanan = $this->toPesanan($row);
+
+                $transaksi = new Transaksi();
+                $transaksi->setId($row['t_id']);
+                $transaksi->setNamaPembayaran($row['t_nama_pembayaran']);
+                $transaksi->setBankPembayaran($row['t_bank_pembayaran']);
+                $transaksi->setNominalDibayarkan($row['t_nominal_dibayarkan']);
+                $transaksi->setStatusPembayaran(StatusPembayaran::from($row['t_status_pembayaran']));
+                $transaksi->setKonfirmasiPembayaran(KonfirmasiPembayaran::from($row['t_konfirmasi_pembayaran']));
+                $transaksi->setFileBuktiPembayaran($row['t_file_bukti_pembayaran']);
+                $transaksi->setTanggalPembayaran(is_null($row['t_tanggal_pembayaran']) ? null : date_create($row['t_tanggal_pembayaran']));
+
+                $pelanggan = new Pelanggan();
+                $pelanggan->setId($row['p2_id']);
+                $pelanggan->setNama($row['p2_nama']);
+                $pelanggan->setKontak($row['p2_kontak']);
+                $pelanggan->setAlamat($row['p2_alamat']);
+                $pelanggan->setAkunId($row['p2_akun_id']);
+                $pelanggan->setAkun(null);
+
+                $pesanan->setTransaksi($transaksi);
+                $pesanan->setPemesan($pelanggan);
+            }
+
+            $detailPesanan = new DetailPesanan();
+            $detailPesanan->setId($row['dp_id']);
+            $detailPesanan->setTotal($row['dp_total']);
+            $detailPesanan->setJenisBeras($row['dp_jenis_beras']);
+            $detailPesanan->setHargaSatuan($row['dp_harga_satuan']);
+            $detailPesanan->setJumlahBeli($row['dp_jumlah_beli']);
+            $detailPesanan->setTakaranBeras($row['dp_takaran_beras']);
+            $detailPesanan->setRefTakaranId($row['dp_ref_takaran_id']);
+            $detailPesanan->setRefBerasId($row['dp_ref_beras_id']);
+
+            $pesanan->addDetailPesanan($detailPesanan);
+
+            $listPesanan[$row['id']] = $pesanan;
         }
 
         return array_values($listPesanan);
@@ -248,6 +334,8 @@ class PesananRepository extends BaseRepository
             dp.jumlah_beli as dp_jumlah_beli,
             dp.total as dp_total,
             dp.id as dp_id,
+            dp.ref_beras_id as dp_ref_beras_id,
+            dp.ref_takaran_id as dp_ref_takaran_id,
             t.id as t_id,
             t.tanggal_pembayaran as t_tanggal_pembayaran,
             t.nama_pembayaran as t_nama_pembayaran,
