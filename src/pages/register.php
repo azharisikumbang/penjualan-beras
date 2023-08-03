@@ -1,10 +1,4 @@
-<?php
-
-if (session()->auth()) response()->redirectTo(site_url(session()->auth()->getRole()->redirectPage()));
-
-//html_require_component('navbar');
-
-?>
+<?php if (session()->auth()) response()->redirectTo(site_url(session()->auth()->getRole()->redirectPage()));  ?>
 <main class="bg-gray-100 min-h-screen">
     <div class="mx-w-screen mx-auto p-12">
         <div class="flex flex-row bg-white rounded-lg shadow-lg">
