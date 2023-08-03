@@ -55,8 +55,8 @@ if(false === $valid) response()->notFound();
                         </div>
                     </div>
                     <div class="mb-4">
-                        <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total Dibayarkan (<small>bayarkan sesuai angka tagihan.</small>)</label>
-                        <input x-model="properties.form.nominal" type="text" class="shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none block w-full p-2.5" min="0" value="0" required>
+                        <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Total Dibayarkan (<small>diisi otomaris sesuai angka tagihan.</small>)</label>
+                        <p class="shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none block w-full p-2.5" x-text="currencyToRupiah(properties.data.pesanan.total_tagihan)"></p>
                     </div>
                     <div class="mb-4">
                         <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Bukti Pembayaran (gambar)</label>
@@ -81,13 +81,13 @@ if(false === $valid) response()->notFound();
                             <p>Total Tagihan</p>
                             <p class="font-semibold" x-text="currencyToRupiah(properties.data.pesanan.total_tagihan)"></p>
                         </div>
-                        <div class="flex justify-between border-b text-gray-900 py-1 mb-1">
+                        <div class="flex justify-between text-gray-900 py-1 mb-1">
                             <p>Item pembelian</p>
                             <ul>
                                 <template x-for="item in properties.data.pesanan.list_pesanan">
-                                    <li class="list-disc text-sm italic">
-                                        <span x-text="item.nama_beras"></span> (<span x-text="addDotToCurrentcy(item.jumlah_beli)"></span>kg)
-                                        <span x-text="currencyToRupiah(item.total)"></span>
+                                    <li class="text-right text-sm italic">
+                                        <span x-text="item.jenis_beras"></span> (takaran: <span x-text="item.takaran_beras"></span>)
+                                        @<span x-text="currencyToRupiah(item.total)"></span>
                                     </li>
                                 </template>
                             </ul>
