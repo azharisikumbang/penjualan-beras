@@ -25,4 +25,19 @@ enum StatusPembayaran : string
             default => 'gray'
         };
     }
+
+    public static function toArray() : array
+    {
+        $result = [];
+        foreach (self::cases() as $case) {
+            $result[] = [
+                'name' => $case->name,
+                'value' => $case->value,
+                'color' => $case->getColor(),
+                'display_as' => $case->getDisplay()
+            ];
+        }
+
+        return $result;
+    }
 }
