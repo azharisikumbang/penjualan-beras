@@ -15,7 +15,7 @@ $listTakaran = app()->getManager()->getService('KelolaTakaran')->listTakaran();
 <main x-data="container">
     <div class="px-4 pt-6">
         <div class="mb-4 col-span-full">
-            <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white" ref="title">Kelola Data Beras</h1>
+            <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white" ref="title">Pesanan Masuk</h1>
         </div>
         <?php if(session('temp')): ?>
             <div class="mb-4 block w-full text-base font-regular px-4 py-4 rounded-lg bg-green-500 text-white">
