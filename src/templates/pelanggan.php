@@ -44,7 +44,10 @@ $route = strtolower(get_current_route());
                         <a href="<?= site_url('pelanggan/riwayat') ?>" aria-current="page" class="<?= $route == 'pelanggan/riwayat' || $route == 'pelanggan/riwayat/detail' ? 'bg-orange-600 rounded text-white' : 'text-gray-600 hover:text-orange-600 hover:underline' ?> text-sm px-2 py-1">Riwayat Pembelian</a>
                     </li>
                     <li>
-                        <a href="#" aria-current="page" class="<?= $route == 'pelanggan/pengaturan' ? 'bg-orange-600 rounded text-white' : 'text-gray-600 hover:text-orange-600 hover:underline' ?> text-sm px-2 py-1">Pengaturan Akun</a>
+                        <a href="<?= site_url('pelanggan/profil') ?>" aria-current="page" class="<?= $route == 'pelanggan/profil' ? 'bg-orange-600 rounded text-white' : 'text-gray-600 hover:text-orange-600 hover:underline' ?> text-sm px-2 py-1">Profil</a>
+                    </li>
+                    <li>
+                        <a href="<?= site_url('pelanggan/ganti-password') ?>" aria-current="page" class="<?= $route == 'pelanggan/ganti-password' ? 'bg-orange-600 rounded text-white' : 'text-gray-600 hover:text-orange-600 hover:underline' ?> text-sm px-2 py-1">Ganti Kata Sandi</a>
                     </li>
                 </ul>
             </div>

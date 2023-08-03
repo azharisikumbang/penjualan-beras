@@ -34,4 +34,16 @@ class KelolaPelanggan
         $kelolaPesanan = new KelolaPesanan();
         return $kelolaPesanan->cariBerdasarkanPemesan($pelanggan, true);
     }
+
+    public function perbaharuiDataPelanggan(Akun $akun, string $nama, string $kontak, string $alamat): bool
+    {
+        $pelanggan = $this->pelangganRepository->findByAkunId($akun->getId());
+        if (is_null($pelanggan)) return false;
+
+        return $this->pelangganRepository->update($pelanggan, [
+            'nama' => $nama,
+            'kontak' => $kontak,
+            'alamat' => $alamat
+        ]);
+    }
 }
