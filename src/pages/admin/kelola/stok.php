@@ -13,6 +13,12 @@ $listStokBeras = app()->getManager()->getService('KelolaStok')->listStokBeras();
 ?>
 <main x-data="container">
     <div class="px-4 pt-6">
+        <div class="my-4 text-blue-600 border rounded-lg border-blue-600 px-2 py-2">
+            <strong>Perhatian:</strong>
+            <p>
+                *Stok Tersedia adalah jumlah stok yang tersedia dalam satuan takaran (karungan), bukan jumlah kilogram.
+            </p>
+        </div>
         <div class="mb-4 col-span-full">
             <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white" ref="title">Data Stok dan Harga</h1>
         </div>
@@ -56,8 +62,8 @@ $listStokBeras = app()->getManager()->getService('KelolaStok')->listStokBeras();
                             <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase">
                                 Jenis Beras
                             </th>
-                            <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase">
-                                Stok Tersedia (kg)
+                            <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
+                                Stok Tersedia* (dikali: Takaran)
                             </th>
                             <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase">
                                 Harga (Rupiah)
@@ -74,9 +80,9 @@ $listStokBeras = app()->getManager()->getService('KelolaStok')->listStokBeras();
                                         <span class="text-base font-semibold text-gray-900 dark:text-white" x-text="item.relations.beras.jenis"></span>
                                         ( takaran: <span class="" x-text="item.relations.takaran.variant.toUpperCase()"></span> )
                                     </td>
-                                    <td class="p-4 whitespace-nowrap">
+                                    <td class="p-4 whitespace-nowrap text-center">
                                         <p class="text-base text-gray-600">
-                                            <span class="" x-text="addDotToNumber(item.jumlah_stok)"></span> Kg
+                                            <span class="" x-text="addDotToNumber(item.jumlah_stok)"></span>
                                         </p>
                                     </td>
                                     <td class="p-4 whitespace-nowrap">
@@ -118,7 +124,7 @@ $listStokBeras = app()->getManager()->getService('KelolaStok')->listStokBeras();
                         <input x-model="properties.form.selected_string" type="text" class="shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none block w-full p-2.5" disabled>
                     </div>
                     <div class="mb-4">
-                        <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stok</label>
+                        <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Stok Tersedia*</label>
                         <input x-model="properties.form.stok" type="number" class="shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none block w-full p-2.5">
                     </div>
                     <div class="mb-4">
