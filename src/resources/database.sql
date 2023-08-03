@@ -69,6 +69,8 @@ CREATE TABLE detail_pesanan(
   jumlah_beli int default 1,
   total decimal(10, 2) default 0,
   pesanan_id int not null,
+  ref_takaran_id int,
+  ref_beras_id int,
 
   FOREIGN KEY (pesanan_id) REFERENCES pesanan(id) ON DELETE CASCADE
 );
