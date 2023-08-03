@@ -137,7 +137,7 @@ class Pesanan implements EntityInterface
      */
     public function setAlamatPengiriman(string $alamatPengiriman): void
     {
-        $this->alamatPengiriman = $alamatPengiriman;
+        $this->alamatPengiriman = trim($alamatPengiriman);
     }
 
     /**
