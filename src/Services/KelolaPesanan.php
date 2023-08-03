@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../Repositories/PesananRepository.php';
 require_once __DIR__ . '/../Repositories/AkunRepository.php';
+require_once __DIR__ . '/../Repositories/StokRepository.php';
 require_once __DIR__ . '/../Libraries/Disk.php';
 
 class KelolaPesanan
@@ -40,6 +41,8 @@ class KelolaPesanan
             $detail->setHargaSatuan($item->getDetail()->getHarga());
             $detail->setJenisBeras($item->getDetail()->getBeras()->getJenis());
             $detail->setTakaranBeras($item->getDetail()->getTakaran()->getVariant());
+            $detail->setRefBerasId($item->getDetail()->getBerasId());
+            $detail->setRefTakaranId($item->getDetail()->getTakaranId());
 
             $pesanan->addDetailPesanan($detail);
         }
@@ -63,6 +66,27 @@ class KelolaPesanan
         }
 
         return $pesanan->getPemesan()->getAkun()->getId() == $akun->getId();
+    }
+
+    public function konfirmasiPembayaran(string $nomor, string $status) : bool
+    {
+        $status = KonfirmasiPembayaran::tryFrom($status);
+        if (is_null($status)) return false;
+
+        $pesanan = $this->pesananRepository->findByNomorPesanan($nomor, true);
+        if (is_null($pesanan) || $pesanan->getTransaksi()->getStatusPembayaran() != StatusPembayaran::LUNAS) return false;
+
+        $updated = $this->transaksiRepository->update($pesanan->getTransaksi(), [
+            'konfirmasi_pembayaran' => $status->value
+        ]);
+
+        return $updated ? $this->kurangiStokSesuaiPesanan($pesanan) : false;
+    }
+
+    public function kurangiStokSesuaiPesanan(Pesanan $pesanan) : bool
+    {
+        $stokRepository = new StokRepository();
+        return $stokRepository->updateBatchStok($pesanan->getListPesanan());
     }
 
     public function terimaPembayaran(string $nomor): bool
@@ -94,6 +118,30 @@ class KelolaPesanan
     public function listPesanan(int $total = 10, int $start = 0): array
     {
         return $this->pesananRepository->get($total, $start, 'tanggal_pemesanan', 'DESC');
+    }
+
+    public function listPesananWithFilter(
+        int $total = 10,
+        int $start = 0,
+        ?string $periode = null,
+        ?string $search = null,
+        ?string $statusPemesanan = null,
+        ?string $statusPembayaran = null
+    ): array {
+        $start = ($start * $total) - $total;
+        $searchable = [];
+
+        if ($periode == 'today') $searchable['tanggal_pemesanan'] = date("Y-m"). '%';
+        if ($search != null || $search != '') $searchable['nomor_pesanan'] = trim($search);
+        if ($enumStatusPemesanan = StatusPembayaran::tryFrom(strtoupper((string) $statusPemesanan))) {
+            if ($enumStatusPemesanan != null) $searchable['status_pembayaran'] = $enumStatusPemesanan->value;
+        }
+        if ($enumKonfirmasiPembayaran = KonfirmasiPembayaran::tryFrom(strtoupper((string) $statusPembayaran))) {
+
+            if ($enumKonfirmasiPembayaran != null) $searchable['konfirmasi_pembayaran'] = $enumKonfirmasiPembayaran->value;
+        }
+
+        return $this->pesananRepository->findWithRelationsWhere($searchable, $total, $start);
     }
 
     private function createNomorPesanan() : array

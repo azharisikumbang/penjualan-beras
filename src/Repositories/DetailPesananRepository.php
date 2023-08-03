@@ -21,7 +21,10 @@ class DetailPesananRepository extends BaseRepository
         $detailPesanan->setTotal($rows['total']);
         $detailPesanan->setJenisBeras($rows['jenis_beras']);
         $detailPesanan->setHargaSatuan($rows['harga_satuan']);
+        $detailPesanan->setRefBerasId($rows['ref_beras_id']);
+        $detailPesanan->setRefTakaranId($rows['ref_takaran_id']);
         $detailPesanan->setJumlahBeli($rows['jumlah_beli']);
+        $detailPesanan->setRefBerasId($rows['ref_stok_id']);
 
         return $detailPesanan;
     }
@@ -35,6 +38,8 @@ class DetailPesananRepository extends BaseRepository
             'jenis_beras' => $detailPesanan->getJenisBeras(),
             'takaran_beras' => $detailPesanan->getTakaranBeras(),
             'harga_satuan' => $detailPesanan->getHargaSatuan(),
+            'ref_beras_id' => $detailPesanan->getRefBerasId(),
+            'ref_takaran_id' => $detailPesanan->getRefTakaranId(),
             'jumlah_beli' => $detailPesanan->getJumlahBeli(),
             'total' => $detailPesanan->getTotal(),
             'pesanan_id' => $pesanan->getId()

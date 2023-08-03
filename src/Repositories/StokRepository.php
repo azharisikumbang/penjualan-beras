@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../Repositories/BerasRepository.php';
 require_once __DIR__ . '/../Entities/Stok.php';
+require_once __DIR__ . '/../Entities/DetailPesanan.php';
 
 class StokRepository
 {
@@ -162,5 +163,36 @@ class StokRepository
     protected function getTable(): string
     {
         return $this->table;
+    }
+
+    public function updateBatchStok(array $listDetailPesanan) : bool
+    {
+        $dbh = $this->getDatabaseConnection();
+
+        if ($dbh->beginTransaction()) {
+            try {
+                /** @var $detailPesanan DetailPesanan */
+                foreach ($listDetailPesanan as $detailPesanan) {
+                    $existsStok = $this->findByBerasAndTakaran($detailPesanan->getRefBerasId(), $detailPesanan->getRefTakaranId());
+                    if ($existsStok) {
+                        if ($detailPesanan->getJumlahBeli() > $existsStok->getStok()) continue;
+                        $stokBaru = $existsStok->getStok() - $detailPesanan->getJumlahBeli();
+                        $existsStok->setStok($stokBaru);
+
+                        $this->update($existsStok);
+                    }
+                }
+
+                $dbh->commit();
+
+                return true;
+            }
+            catch (Exception $exception) {
+                $dbh->rollBack();
+                var_dump($exception->getMessage());
+            }
+        }
+
+        return false;
     }
 }

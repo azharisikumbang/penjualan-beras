@@ -11,6 +11,10 @@ class DetailPesanan implements EntityInterface
 
      private string $takaranBeras;
 
+     private int $refBerasId;
+
+     private int $refTakaranId;
+
     private float $hargaSatuan;
 
     private int $jumlahBeli;
@@ -111,6 +115,38 @@ class DetailPesanan implements EntityInterface
     public function setTakaranBeras(string $takaranBeras): void
     {
         $this->takaranBeras = $takaranBeras;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRefBerasId(): int
+    {
+        return $this->refBerasId;
+    }
+
+    /**
+     * @param int $refBerasId
+     */
+    public function setRefBerasId(int $refBerasId): void
+    {
+        $this->refBerasId = $refBerasId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRefTakaranId(): int
+    {
+        return $this->refTakaranId;
+    }
+
+    /**
+     * @param int $refTakaranId
+     */
+    public function setRefTakaranId(int $refTakaranId): void
+    {
+        $this->refTakaranId = $refTakaranId;
     }
 
     public function toArray(): array
