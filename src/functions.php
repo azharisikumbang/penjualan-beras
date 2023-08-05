@@ -182,6 +182,13 @@ if(!(function_exists('load_externals'))) {
     }
 }
 
+if(!(function_exists('require_vendor'))) {
+    function require_vendor() : void
+    {
+        require_once __DIR__ . '/../vendor/autoload.php';
+    }
+}
+
 if(!(function_exists('dd'))) {
     function dd(mixed $data) : void
     {
