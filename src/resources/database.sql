@@ -89,6 +89,15 @@ CREATE TABLE transaksi(
     FOREIGN KEY (pesanan_id) REFERENCES pesanan(id) ON DELETE CASCADE
 );
 
+CREATE table promo(
+    id int primary key auto_increment,
+    jenis_promo varchar(64) not null,
+    kode_kupon varchar(16) not null,
+    tanggal_kadaluarsa date null,
+    minimum_pembelian decimal(10, 2) default 0,
+    potongan_harga decimal(10, 2) default 0
+);
+
 /* insert admin user */
 INSERT INTO akun (username, password, role) VALUES ('admin', '$2y$10$F09VT7vnzeFqoTuQAj3CoOhJg4wq96bJy1Ah1ltQplyHAus8vJGJO', 'ADMIN');
 
