@@ -195,4 +195,46 @@ class StokRepository
 
         return false;
     }
+
+    public function getDataForLaporanStokBeras() : array
+    {
+        $query = "SELECT s.jumlah_stok, s.harga, b.jenis as b_jenis, vt.variant as vt_variant
+            FROM {$this->getTable()} s
+            JOIN varian_takaran vt on vt.id = s.varian_takaran_id
+            JOIN beras b on b.id = s.beras_id
+            ORDER BY b.jenis";
+
+        $stmt = $this->getDatabaseConnection()->prepare($query);
+        $stmt->execute();
+
+        if ($stmt->rowCount() < 1) return [];
+
+        $result = [];
+        $number = 1;
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $result[] = [
+                [
+                    'type' => 'number',
+                    'value' => $number++
+                ],[
+                    'type' => 'text',
+                    'value' => $row['b_jenis']
+                ],[
+                    'type' => 'text',
+                    'value' => $row['vt_variant']
+                ],[
+                    'type' => 'currency',
+                    'value' => $row['harga']
+                ],[
+                    'type' => 'number',
+                    'value' => $row['jumlah_stok']
+                ],[
+                    'type' => 'number',
+                    'value' => 0
+                ]
+            ];
+        }
+
+        return $result;
+    }
 }
