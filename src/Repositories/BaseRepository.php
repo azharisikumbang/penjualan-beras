@@ -74,12 +74,6 @@ abstract class BaseRepository
 
     public function exists(int|EntityInterface $entity): bool
     {
-//        if($entity instanceof EntityInterface) {
-//            if(is_null($entity->getId())) return false;
-//
-//            $id = $entity->getId();
-//        }
-
         $query = "SELECT EXISTS(SELECT id FROM {$this->getTable()} WHERE id = :id) as 'exists'";
 
         return $this->existsBy($query, ['id' => is_int($entity) ? $entity : $entity->getId() ]);
