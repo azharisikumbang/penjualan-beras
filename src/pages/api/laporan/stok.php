@@ -2,7 +2,7 @@
 
 if (
     false === session()->isAuthenticatedAs('pimpinan') ||
-    request()->notPostRequest() ||
+    request()->notGetRequest() ||
     false === request()->has(['kriteria'])
 ) response()->notFound();
 
