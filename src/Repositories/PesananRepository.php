@@ -90,6 +90,67 @@ class PesananRepository extends BaseRepository
         return $pesanan;
     }
 
+    public function all(bool $withRelations = false) : array
+    {
+        if (!$withRelations) {
+            $stmt = $this->execute($this->queryGetWithoutRelations());
+            if ($stmt->rowCount() < 1) return [];
+
+            $result = [];
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) $result[] = $this->toEntity($row);
+
+            return $result;
+        }
+
+        $stmt = $this->execute($this->queryGetWithRelations());
+        if($stmt->rowCount() < 1) return [];
+
+        $listPesanan = [];
+        $pesanan = null;
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if(is_null($pesanan) || $pesanan->getId() != $row['id']) {
+                $pesanan = $this->toPesanan($row);
+
+                $transaksi = new Transaksi();
+                $transaksi->setId($row['t_id']);
+                $transaksi->setNamaPembayaran($row['t_nama_pembayaran']);
+                $transaksi->setBankPembayaran($row['t_bank_pembayaran']);
+                $transaksi->setNominalDibayarkan($row['t_nominal_dibayarkan']);
+                $transaksi->setStatusPembayaran(StatusPembayaran::from($row['t_status_pembayaran']));
+                $transaksi->setKonfirmasiPembayaran(KonfirmasiPembayaran::from($row['t_konfirmasi_pembayaran']));
+                $transaksi->setFileBuktiPembayaran($row['t_file_bukti_pembayaran']);
+                $transaksi->setTanggalPembayaran(is_null($row['t_tanggal_pembayaran']) ? null : date_create($row['t_tanggal_pembayaran']));
+
+                $pelanggan = new Pelanggan();
+                $pelanggan->setId($row['p2_id']);
+                $pelanggan->setNama($row['p2_nama']);
+                $pelanggan->setKontak($row['p2_kontak']);
+                $pelanggan->setAlamat($row['p2_alamat']);
+                $pelanggan->setAkunId($row['p2_akun_id']);
+                $pelanggan->setAkun(null);
+
+                $pesanan->setTransaksi($transaksi);
+                $pesanan->setPemesan($pelanggan);
+            }
+
+            $detailPesanan = new DetailPesanan();
+            $detailPesanan->setId($row['dp_id']);
+            $detailPesanan->setTotal($row['dp_total']);
+            $detailPesanan->setJenisBeras($row['dp_jenis_beras']);
+            $detailPesanan->setHargaSatuan($row['dp_harga_satuan']);
+            $detailPesanan->setJumlahBeli($row['dp_jumlah_beli']);
+            $detailPesanan->setTakaranBeras($row['dp_takaran_beras']);
+            $detailPesanan->setRefTakaranId($row['dp_ref_takaran_id']);
+            $detailPesanan->setRefBerasId($row['dp_ref_beras_id']);
+
+            $pesanan->addDetailPesanan($detailPesanan);
+
+            $listPesanan[$row['id']] = $pesanan;
+        }
+
+        return array_values($listPesanan);
+    }
+
     protected function getTable(): string
     {
         return $this->table;
@@ -254,6 +315,78 @@ class PesananRepository extends BaseRepository
         $query = $this->queryGetWithRelations($appendQuery);
         $stmt = $this->execute($query, $whereList);
 
+        if($stmt->rowCount() < 1) return [];
+
+        $listPesanan = [];
+        $pesanan = null;
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            if(is_null($pesanan) || $pesanan->getId() != $row['id']) {
+                $pesanan = $this->toPesanan($row);
+
+                $transaksi = new Transaksi();
+                $transaksi->setId($row['t_id']);
+                $transaksi->setNamaPembayaran($row['t_nama_pembayaran']);
+                $transaksi->setBankPembayaran($row['t_bank_pembayaran']);
+                $transaksi->setNominalDibayarkan($row['t_nominal_dibayarkan']);
+                $transaksi->setStatusPembayaran(StatusPembayaran::from($row['t_status_pembayaran']));
+                $transaksi->setKonfirmasiPembayaran(KonfirmasiPembayaran::from($row['t_konfirmasi_pembayaran']));
+                $transaksi->setFileBuktiPembayaran($row['t_file_bukti_pembayaran']);
+                $transaksi->setTanggalPembayaran(is_null($row['t_tanggal_pembayaran']) ? null : date_create($row['t_tanggal_pembayaran']));
+
+                $pelanggan = new Pelanggan();
+                $pelanggan->setId($row['p2_id']);
+                $pelanggan->setNama($row['p2_nama']);
+                $pelanggan->setKontak($row['p2_kontak']);
+                $pelanggan->setAlamat($row['p2_alamat']);
+                $pelanggan->setAkunId($row['p2_akun_id']);
+                $pelanggan->setAkun(null);
+
+                $pesanan->setTransaksi($transaksi);
+                $pesanan->setPemesan($pelanggan);
+            }
+
+            $detailPesanan = new DetailPesanan();
+            $detailPesanan->setId($row['dp_id']);
+            $detailPesanan->setTotal($row['dp_total']);
+            $detailPesanan->setJenisBeras($row['dp_jenis_beras']);
+            $detailPesanan->setHargaSatuan($row['dp_harga_satuan']);
+            $detailPesanan->setJumlahBeli($row['dp_jumlah_beli']);
+            $detailPesanan->setTakaranBeras($row['dp_takaran_beras']);
+            $detailPesanan->setRefTakaranId($row['dp_ref_takaran_id']);
+            $detailPesanan->setRefBerasId($row['dp_ref_beras_id']);
+
+            $pesanan->addDetailPesanan($detailPesanan);
+
+            $listPesanan[$row['id']] = $pesanan;
+        }
+
+        return array_values($listPesanan);
+    }
+
+    public function getDataForLaporanPenjualan(string $tanggalPemesanan = 'all') : array
+    {
+        $queryTanggalPemesanan = "";
+        $appendQuery = "";
+        $hasWhere = false;
+        switch ($tanggalPemesanan) {
+            case 'today':
+                $queryTanggalPemesanan = "DATE(p.tanggal_pemesanan) = CURDATE()";
+                $hasWhere = true;
+                break;
+            case 'month':
+                $hasWhere = true;
+                $queryTanggalPemesanan = "MONTH(p.tanggal_pemesanan) = MONTH(CURRENT_DATE()) AND YEAR(p.tanggal_pemesanan) = YEAR(CURRENT_DATE())";
+                break;
+            default:
+                $hasWhere = false;
+                break;
+        }
+
+        if ($hasWhere) {
+            $appendQuery = "WHERE $queryTanggalPemesanan";
+        }
+
+        $stmt = $this->execute($this->queryGetWithRelations($appendQuery));
         if($stmt->rowCount() < 1) return [];
 
         $listPesanan = [];
