@@ -6,14 +6,14 @@ enum Role : string
 
     case PELANGGAN = 'pelanggan';
 
-    case KARYAWAN = 'karyawan';
+    case PIMPINAN = 'pimpinan';
 
     case PUBLIC = 'public';
 
     public function pageTemplate()
     {
         return match ($this) {
-            Role::KARYAWAN => 'karyawan',
+            Role::PIMPINAN => 'pimpinan',
             Role::PELANGGAN => 'pelanggan',
             Role::ADMIN => 'admin',
             default => 'public'
@@ -23,7 +23,7 @@ enum Role : string
     public function redirectPage()
     {
         return match ($this) {
-            Role::KARYAWAN => 'karyawan',
+            Role::PIMPINAN => 'pimpinan/beranda',
             Role::PELANGGAN => 'pelanggan/beranda',
             Role::ADMIN => 'admin',
             default => 'public'

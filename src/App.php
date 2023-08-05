@@ -49,7 +49,7 @@ final class App
         $role = match (strtolower($for)) {
             'admin' => Role::ADMIN,
             'pelanggan' => Role::PELANGGAN,
-            'karyawan' => Role::KARYAWAN,
+            'pimpinan' => Role::PIMPINAN,
             default => Role::PUBLIC
         };
 
