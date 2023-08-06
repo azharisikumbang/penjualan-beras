@@ -18,9 +18,11 @@ class KelolaPelanggan
         return $this->pelangganRepository->get($total, $start, 'nama', 'ASC');
     }
 
-    public function cariBerdasarkanAkun(Akun $akun) : Pelanggan
+    public function cariBerdasarkanAkun(Akun $akun) : ?Pelanggan
     {
         $pelanggan = $this->pelangganRepository->findByAkunId($akun->getId());
+        if (is_null($pelanggan)) return null;
+
         $pelanggan->setAkun($akun);
 
         return $pelanggan;
