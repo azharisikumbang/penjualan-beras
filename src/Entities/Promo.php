@@ -112,14 +112,14 @@ class Promo implements EntityInterface
         $this->potonganHarga = $potonganHarga;
     }
 
-    private function isOutOfDate(): bool
+    public function isOutOfDate(): bool
     {
         if (is_null($this->getTanggalKadaluarsa())) return false;
 
         return (date('Y-m-d') > $this->getTanggalKadaluarsa()->format('Y-m-d'));
     }
 
-    private function isLowerThan100(): bool
+    public function isPercent(): bool
     {
         return $this->getPotonganHarga() <= 100;
     }
@@ -134,7 +134,7 @@ class Promo implements EntityInterface
             'minimum_pembelian' => $this->getMinimumPembelian(),
             'potongan_harga' => $this->getPotonganHarga(),
             'kadaluarsa' => $this->isOutOfDate(),
-            'is_persen' => $this->isLowerThan100()
+            'is_persen' => $this->isPercent()
         ];
     }
 }

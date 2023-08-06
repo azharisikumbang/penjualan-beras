@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../Repositories/PesananRepository.php';
 require_once __DIR__ . '/../Repositories/AkunRepository.php';
 require_once __DIR__ . '/../Repositories/StokRepository.php';
+require_once __DIR__ . '/../Services/KelolaPromo.php';
 require_once __DIR__ . '/../Libraries/Disk.php';
 
 class KelolaPesanan
@@ -22,6 +23,15 @@ class KelolaPesanan
 
     public function buatPesananBaru(Pelanggan $pelanggan, Keranjang $keranjang): false|Pesanan
     {
+        if ($keranjang->getItems() < 1) return false;
+
+        $promo = null;
+        $kodePromo = $keranjang->getDiskon()?->getKodePromo();
+        if (!is_null($kodePromo) || $kodePromo != '') {
+            $promoService = new KelolaPromo();
+            $promo = $promoService->cekKodeKupon($keranjang->getDiskon()->getKodePromo());
+        }
+
         $nomorPesananArray = $this->createNomorPesanan();
         $transaksi = Transaksi::makeEmpty();
 
@@ -29,9 +39,19 @@ class KelolaPesanan
         $pesanan->setNomorPesanan($nomorPesananArray['nomor_pesanan']);
         $pesanan->setNomorIterasiPesanan($nomorPesananArray['nomor_iterasi_pesanan']);
         $pesanan->setTanggalPemesanan(date_create('now'));
-        $pesanan->setTotalTagihan($keranjang->getTotal());
         $pesanan->setTransaksi($transaksi);
         $pesanan->setPemesan($pelanggan);
+        $pesanan->setSubTotal($keranjang->getTotal());
+        $pesanan->setKodePromo($kodePromo);
+
+        if (null !== $promo) {
+            $diskon = $promo->getPotonganHarga();
+            if ($promo->isPercent()) $diskon = ($pesanan->getSubTotal() * $promo->getPotonganHarga()) / 100;
+
+            $pesanan->setDiskon($diskon);
+        }
+
+        $pesanan->setTotalTagihan($pesanan->getSubTotal() - $pesanan->getDiskon());
 
         foreach ($keranjang->getItems() as $item) {
             /** @var $item Item */
@@ -131,7 +151,7 @@ class KelolaPesanan
         $start = ($start * $total) - $total;
         $searchable = [];
 
-        if ($periode == 'today') $searchable['tanggal_pemesanan'] = date("Y-m"). '%';
+        if ($periode == 'today') $searchable['tanggal_pemesanan'] = date("Y-m-d"). '%';
         if ($search != null || $search != '') $searchable['nomor_pesanan'] = trim($search);
         if ($enumStatusPemesanan = StatusPembayaran::tryFrom(strtoupper((string) $statusPemesanan))) {
             if ($enumStatusPemesanan != null) $searchable['status_pembayaran'] = $enumStatusPemesanan->value;
@@ -171,10 +191,10 @@ class KelolaPesanan
     {
         $pesanan = is_string($pesanan) ? $this->pesananRepository->findByNomorPesanan($pesanan, true) : $pesanan;
         if(is_null($pesanan)) return false;
-
         if (false === $this->validasiNominalBayar($pesanan, $nominal)) return false;
 
         $fileBuktiPembayaran = Disk::simpanBuktiPembayaran($bukti);
+        if (false === $fileBuktiPembayaran) return false;
 
         $transaksi = $pesanan->getTransaksi();
 
@@ -197,5 +217,10 @@ class KelolaPesanan
     public function cariBerdasarkanPemesan(int|Pelanggan $pelanggan, bool $detail = false): array
     {
         return $this->pesananRepository->findByPemesanId($pelanggan, $detail);
+    }
+
+    public function cekApakahKodePromoSudahTerpakai(string $kode, int $pelanggan) : bool
+    {
+        return $this->pesananRepository->isExistsByKodePromoAndPemesanId($kode, $pelanggan);
     }
 }

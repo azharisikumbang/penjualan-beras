@@ -20,6 +20,12 @@ class Pesanan implements EntityInterface
 
     private float $totalTagihan;
 
+    private float $subTotal;
+
+    private float $diskon = 0;
+
+    private ?string $kodePromo;
+
     private string $alamatPengiriman = "";
 
     private ?Pelanggan $pemesan;
@@ -198,6 +204,59 @@ class Pesanan implements EntityInterface
         $this->transaksi = $transaksi;
     }
 
+    /**
+     * @return float
+     */
+    public function getSubTotal(): float
+    {
+        return $this->subTotal;
+    }
+
+    /**
+     * @param float $subTotal
+     */
+    public function setSubTotal(float $subTotal): void
+    {
+        $this->subTotal = $subTotal;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDiskon(): float
+    {
+        return $this->diskon;
+    }
+
+    /**
+     * @param float $diskon
+     */
+    public function setDiskon(float $diskon): void
+    {
+        $this->diskon = $diskon;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getKodePromo(): ?string
+    {
+        return $this->kodePromo;
+    }
+
+    /**
+     * @param string|null $kodePromo
+     */
+    public function setKodePromo(?string $kodePromo): void
+    {
+        $this->kodePromo = $kodePromo;
+    }
+
+    public function informasiPengirimanIsFilled() : bool
+    {
+        return $this->getAlamatPengiriman() && $this->getNamaPesanan() && $this->getKontakPesanan();
+    }
+
     public function toArray(): array
     {
         return [
@@ -209,6 +268,9 @@ class Pesanan implements EntityInterface
             'alamat_pengiriman' => $this->getAlamatPengiriman(),
             'tanggal_pemesanan' => $this->getTanggalPemesanan()->format('Y-m-d H:i:s'),
             'total_tagihan' => $this->getTotalTagihan(),
+            'sub_total' => $this->getSubTotal(),
+            'diskon' => $this->getSubTotal(),
+            'kode_promo' => $this->getKodePromo(),
             'pemesan' => $this->getPemesan()?->toArray(),
             'list_pesanan' => array_map(fn ($item) => $item->toArray(), $this->getListPesanan()),
             'transaksi' => $this->getTransaksi()?->toArray()

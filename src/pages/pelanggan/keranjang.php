@@ -27,6 +27,7 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
         <div class="mb-4 col-span-full">
             <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Keranjang Belanja</h1>
         </div>
+        <?php if ($keranjang->getItems()): ?>
         <div class="grid grid-cols-3">
             <div class="col-span-2">
                 <div class="flex justify-between">
@@ -65,7 +66,7 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                             Harga Satuan (Rp)
                         </th>
                         <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
-                            Jumlah Beli (kg)
+                            Jumlah Beli
                         </th>
                         <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
                             Total
@@ -75,7 +76,6 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                     </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
-                    <?php if($keranjang->getItems()): ?>
                         <template x-for="(item, index) in properties.data.keranjang.items">
                             <tr>
                                 <td class="w-4 p-4 text-center" x-text="index + 1"></td>
@@ -84,7 +84,7 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                                     ( takaran: <span class="" x-text="item.detail.relations.takaran.variant.toUpperCase()"></span> )
                                 </td>
                                 <td class="p-4 text-gray-500 text-base text-center" x-text="currencyToRupiah(item.detail.harga)"></td>
-                                <td class="p-4 text-gray-500 text-base text-center"><span x-text="addDotToCurrentcy(item.jumlah_beli)"></span> kg</td>
+                                <td class="p-4 text-gray-500 text-base text-center"><span x-text="addDotToCurrentcy(item.jumlah_beli)"></span> x <span x-text="item.detail.relations.takaran.variant.toUpperCase()"></span></td>
                                 <td class="p-4 text-gray-500 text-base text-center" x-text="currencyToRupiah(item.total_harga)"></td>
                                 <td class="p-4 space-x-2 whitespace-nowrap flex justify-end">
                                     <div class="text-sm text-red-500">
@@ -95,23 +95,32 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                                 </td>
                             </tr>
                         </template>
-                    <?php else: ?>
-                        <div class="text-center py-4">Tidak ada data.</div>
-                    <?php endif; ?>
                     </tbody>
                     <tfoot>
                         <tr class="border-t">
-                            <td class="p-4 text-gray-500 text-base text-right" colspan="4">Total Tagihan :</td>
-                            <td class="p-4 text-gray-500 text-base text-center font-bold" x-text="currencyToRupiah(properties.data.keranjang.total)"></td>
+                            <td class="text-gray-500 text-base text-right pt-4" colspan="5">Total Tagihan :</td>
+                            <td class="text-gray-500 text-base text-right pt-4" x-text="currencyToRupiah(properties.data.keranjang.total)"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-gray-500 text-base text-right" colspan="5">Diskon :</td>
+                            <td class="text-gray-500 text-base text-right" x-text="currencyToRupiah(properties.data.nominal_diskon)"></td>
+                        </tr>
+                        <tr>
+                            <td class="text-gray-500 text-base text-right" colspan="5">Total Dibayar:</td>
+                            <td class="text-gray-500 text-base text-right font-bold" x-text="currencyToRupiah(properties.form.total_bayar)"></td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
             <div class="ml-4">
-                <div class="rounded border text-blue-600 border-blue-600 p-2 mb-2">
+                <div class="rounded border text-blue-600 border-blue-600 p-2 mb-4">
                     <strong>Informasi:</strong>
                     <p class="text-sm">- Kolom <b>*jumlah beli</b> diisi jumlah pembelian dalam satuan takaran. </p>
                     <p class="text-sm">- <b>Sub-Total</b> dihitung berdasarkan banyak jumlah beli dengan harga per takaran. </p>
+                </div>
+                <div class="border rounded border-gray-300 p-4 mb-4 flex justify-between gap-2">
+                    <input type="text" x-model="properties.form.kupon" class="w-full border border-gray-300 rounded bg-gray-100 px-2 py-1 outline-none focus:border-gray-400" placeholder="Masukkan kupon dan dapatkan promo.">
+                    <button @click="cekKupon" type="button" class="text-sm w-1/3 text-white bg-gray-500 rounded py-2 px-4 hover:bg-gray-600 text-center">Cek Kupon</button>
                 </div>
                 <div class="border rounded border-gray-300 p-4 mb-4">
                     <div class="flex justify-between gap-4 items-center">
@@ -143,6 +152,9 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                 </div>
             </div>
         </div>
+        <?php else: ?>
+        <div class="italic text-gray-500">Beranjang masih kosong, silahkan <a href="<?= site_url('pelanggan/pesan') ?>" class="text-orange-700 underline hover:text-orange-800">pemesanan</a>.</div>
+        <?php endif; ?>
     </div>
 </main>
 <script type="text/javascript">
@@ -152,7 +164,9 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                 let alpineObj = this;
                 this.postData(
                     '/api/keranjang/save',
-                    this.createFormData({}),
+                    this.createFormData({
+                        'kode_kupon_promo': this.properties.form.kupon
+                    }),
                     function (response) {
                         alpineObj.addNormalMessage('form_response', `Berhasil! Pesanan anda telah dicatat dengan nomor ... Anda akan dialihkan untuk mengisi informasi pengiriman.`);
                         setTimeout(function () {
@@ -160,7 +174,7 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                         }, 2000)
                     },
                     function (err) {
-                        alpineObj.addErrorMassage('bad_request', 'Gagal mencatat pesanan anda, mohon periksa dan coba kembali.')
+                        alpineObj.addErrorMassage('bad_request', error.response.data.errors.message)
                     }
                 )
             },
@@ -178,6 +192,10 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                     function (response) {
                         alpineObj.properties.data.keranjang = response.data.data;
                         alpineObj.addNormalMessage('form_response', `Berhasil! Item telah dihapus dari keranjang.`);
+
+                        if (alpineObj.properties.data.keranjang.items.length < 1) window.location.reload();
+
+                        alpineObj.countTotalAfterDiskon();
                     },
                     function (err) {
                         alpineObj.addErrorMassage('bad_request', 'Gagal menghapus data, mohon muat ulang halaman dan coba lagi.')
@@ -185,7 +203,7 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                 )
             },
             "countTotal": function () {
-                this.properties.form.selected.total = this.properties.form.selected.jumlah_beli * this.properties.form.selected.harga
+                this.properties.form.selected.total = this.properties.form.selected.jumlah_beli * this.properties.form.selected.harga;
             },
             "tambahkanKeKeranjang": function () {
                 if (this.properties.form.selected.id < 1) return;
@@ -199,7 +217,7 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                         'jumlah_beli': this.properties.form.selected.jumlah_beli,
                         'key': this.properties.form.selected.key
                     }),
-                    function (response) {
+                    response => {
                         alpineObj.properties.data.keranjang = response.data.data;
                         alpineObj.properties.form.selected.key = '';
                         alpineObj.properties.form.selected.beras_id = -1;
@@ -209,14 +227,26 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                         alpineObj.properties.form.selected.harga = 0;
                         alpineObj.properties.form.selected.stok = 0;
                         alpineObj.properties.form.selected.jumlah_beli = 0;
+
+                        this.countTotalAfterDiskon();
                     },
-                    function (err) {
+                    err => {
+                        console.error(err);
                         alpineObj.addErrorMassage('bad_request', 'Gagal dalam menyimpan, mohon periksa data dan coba lagi.')
                     }
                 )
             },
             "loadKeranjang": async function () {
-                this.properties.data.keranjang = (await this.getApiRequest('/api/keranjang/list')).data;
+                 this.getApiRequest(
+                     '/api/keranjang/list',
+                     null,
+                     response => {
+                         this.properties.data.keranjang = response.data;
+                     },
+                     error => {
+                         this.addErrorMassage('server_error', 'Server error! Mohon muat ulang halaman dan coba kembali');
+                     }
+                 );
             },
             "editItemKeranjang": function (item) {
                 this.properties.form.selected.beras_id = item.detail.beras_id;
@@ -244,6 +274,40 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                         this.properties.data.keranjang.items.sort((a, b) => b.total_harga - a.total_harga);
                         break;
                 }
+            },
+            "cekKupon": function () {
+                this.clearMassage();
+
+                this.getApiRequest(
+                    '/api/kupon/search',
+                    { 'kupon': this.properties.form.kupon },
+                    response => {
+                        this.addNormalMessage('valid_promo', `Selamat, kode promo: ${response.data.data.kode_kupon} valid. Diskon akan diberikan jika minimum pembelian sebesar ${this.currencyToRupiah(response.data.data.minimum_pembelian)}.`);
+                        this.properties.form.promo = response.data.data;
+
+                        this.countTotalAfterDiskon();
+                    },
+                    error => {
+                        this.addErrorMassage('bad_request', error.response.data.errors.message);
+                        this.properties.form.promo = {};
+
+                        this.properties.data.nominal_diskon = 0;
+                        this.countTotalAfterDiskon();
+                    }
+                );
+            },
+            "countTotalAfterDiskon": function () {
+                if (this.properties.form.promo.hasOwnProperty('id')) {
+                    if (this.properties.data.keranjang.total >= this.properties.form.promo.minimum_pembelian) {
+                        if (this.properties.form.promo.is_persen) this.properties.data.nominal_diskon = (this.properties.data.keranjang.total * this.properties.form.promo.potongan_harga) / 100;
+                        else this.properties.data.nominal_diskon = this.properties.form.promo.potongan_harga;
+                    }
+                }
+
+                let totalTagihan = this.properties.data.keranjang.total;
+                let diskon = this.properties.data.nominal_diskon;
+
+                this.properties.form.total_bayar = totalTagihan - diskon;
             }
         };
 
@@ -280,11 +344,11 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
 
                 elem.classList.add('bg-green-700');
             },
-            "getApiRequest": function (to, params = null) {
+            "getApiRequest": function (to, params = null, callback, callbackError) {
                 return axios
                     .get(this.properties.sites.api_url + to, { params: params })
-                    .then(res => res.data)
-                    .catch(err => console.log(err));
+                    .then(res => callback(res))
+                    .catch(err => callbackError(err));
             },
             "postData": function (to, data, callback, callbackError) {
                 let that = this;
@@ -338,7 +402,8 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                         "normal": []
                     },
                     "data": {
-                        "keranjang": JSON.parse('<?= json_encode($keranjang->toArray()) ?>')
+                        "keranjang": JSON.parse('<?= json_encode($keranjang->toArray()) ?>'),
+                        'nominal_diskon': 0
                     },
                     "form": {
                         "selected": {
@@ -352,10 +417,14 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                             'jumlah_stok_beli': 0,
                             'total': 0,
                             'key': null
-                        }
+                        },
+                        'kupon': "",
+                        'promo': {},
+                        'total_bayar': 0
                     }
                 },
                 "init": function() {
+                    this.countTotalAfterDiskon();
                 }
             })
         );

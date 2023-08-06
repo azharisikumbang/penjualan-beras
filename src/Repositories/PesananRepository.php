@@ -46,7 +46,7 @@ class PesananRepository extends BaseRepository
 
         $pesanan = null;
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            if(is_null($pesanan)) {
+            if(is_null($pesanan) || $pesanan->getId() != $row['id']) {
                 $pesanan = $this->toPesanan($row);
 
                 $transaksi = new Transaksi();
@@ -70,8 +70,6 @@ class PesananRepository extends BaseRepository
                 $pesanan->setTransaksi($transaksi);
                 $pesanan->setPemesan($pelanggan);
             }
-
-            if ($pesanan->getId() != $row['id']) continue;
 
             $detailPesanan = new DetailPesanan();
             $detailPesanan->setId($row['dp_id']);
@@ -168,6 +166,9 @@ class PesananRepository extends BaseRepository
                     nama_pesanan,
                     alamat_pengiriman,
                     tanggal_pemesanan,
+                    sub_total,
+                    diskon,
+                    kode_promo,
                     total_tagihan,
                     pemesan_id
                     ) VALUES (
@@ -176,6 +177,9 @@ class PesananRepository extends BaseRepository
                     :nama_pesanan,
                     :alamat_pengiriman,
                     :tanggal_pemesanan,
+                    :sub_total,
+                    :diskon,
+                    :kode_promo,
                     :total_tagihan,
                     :pemesan_id)";
 
@@ -188,7 +192,10 @@ class PesananRepository extends BaseRepository
                     'alamat_pengiriman' => $pesanan->getAlamatPengiriman(),
                     'tanggal_pemesanan' => $pesanan->getTanggalPemesanan()->format('Y-m-d H:i:s'),
                     'total_tagihan' => $pesanan->getTotalTagihan(),
-                    'pemesan_id' => $pesanan->getPemesan()->getId()
+                    'pemesan_id' => $pesanan->getPemesan()->getId(),
+                    'diskon' => $pesanan->getDiskon(),
+                    'kode_promo' => $pesanan->getKodePromo(),
+                    'sub_total' => $pesanan->getSubTotal()
                 ]);
 
                 if(!$pesananCreated) return false;
@@ -236,7 +243,7 @@ class PesananRepository extends BaseRepository
         $listPesanan = [];
         $pesanan = null;
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            if(is_null($pesanan)) {
+            if(is_null($pesanan) || $pesanan->getId() != $row['id']) {
                 $pesanan = $this->toPesanan($row);
 
                 $transaksi = new Transaksi();
@@ -260,8 +267,6 @@ class PesananRepository extends BaseRepository
                 $pesanan->setTransaksi($transaksi);
                 $pesanan->setPemesan($pelanggan);
             }
-
-            if ($pesanan->getId() != $row['id']) continue;
 
             $detailPesanan = new DetailPesanan();
             $detailPesanan->setId($row['dp_id']);
@@ -453,6 +458,9 @@ class PesananRepository extends BaseRepository
         $pesanan->setTanggalPemesanan(date_create($rows['tanggal_pemesanan']));
         $pesanan->setAlamatPengiriman($rows['alamat_pengiriman']);
         $pesanan->setTotalTagihan($rows['total_tagihan']);
+        $pesanan->setSubTotal($rows['sub_total']);
+        $pesanan->setDiskon($rows['diskon']);
+        $pesanan->setKodePromo($rows['kode_promo']);
         $pesanan->setPemesan(null);
 
         return $pesanan;
@@ -491,5 +499,12 @@ class PesananRepository extends BaseRepository
     private function queryGetWithoutRelations(string $append = '') : string
     {
         return "SELECT * FROM {$this->getTable()} p {$append}";
+    }
+
+    public function isExistsByKodePromoAndPemesanId(string $kode, int $pelanggan): bool
+    {
+        $query = "SELECT EXISTS(SELECT id FROM {$this->getTable()} WHERE kode_promo = :kode_promo AND pemesan_id = :pemesan_id) as 'exists'";
+
+        return $this->existsBy($query, ['kode_promo' => $kode, 'pemesan_id' => $pelanggan]);
     }
 }

@@ -55,7 +55,10 @@ CREATE TABLE pesanan(
     nama_pesanan varchar(255) not null,
     alamat_pengiriman varchar(255) not null,
     tanggal_pemesanan DATETIME,
+    sub_total decimal(10, 2) default 0,
+    diskon decimal(10, 2) default 0,
     total_tagihan decimal(10, 2) default 0,
+    kode_promo varchar(12) null,
     pemesan_id int not null,
 
     FOREIGN KEY (pemesan_id) REFERENCES pelanggan(id)

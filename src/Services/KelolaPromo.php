@@ -51,6 +51,15 @@ class KelolaPromo
         return $this->promoRepository->save($promo);
     }
 
+    public function cekKodeKupon(string $kupon): ?Promo
+    {
+        /** @var $promo Promo */
+        $promo = $this->promoRepository->findBy('kode_kupon', $kupon);
+        if (is_null($promo) || $promo->isOutOfDate()) return null;
+
+        return $promo;
+    }
+
     public function generateCouponCode(): string
     {
         $chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";

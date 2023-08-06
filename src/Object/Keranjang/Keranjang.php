@@ -4,6 +4,7 @@ require_once __DIR__ . '/Item.php';
 require_once __DIR__ . '/Pengiriman.php';
 require_once __DIR__ . '/Pembayaran.php';
 require_once __DIR__ . '/Pembeli.php';
+require_once __DIR__ . '/Diskon.php';
 require_once __DIR__ . '/../../Entities/Beras.php';
 
 class Keranjang
@@ -11,6 +12,8 @@ class Keranjang
     private array $items = [];
 
     private float $total = 0;
+
+    private ?Diskon $diskon = null;
 
     private ?Pembeli $pembeli = null;
 
@@ -96,6 +99,24 @@ class Keranjang
     public function setPengiriman(?Pengiriman $pengiriman): void
     {
         $this->pengiriman = $pengiriman;
+    }
+
+    /**
+     * @return Diskon|null
+     */
+    public function getDiskon(): ?Diskon
+    {
+        return $this->diskon;
+    }
+
+    /**
+     * @param Diskon|null $diskon
+     */
+    public function setDiskon(null|string|Diskon $diskon): void
+    {
+        if (is_string($diskon)) $diskon = new Diskon($diskon);
+
+        $this->diskon = $diskon;
     }
 
     public function addItem(Item $item) : false|Item
