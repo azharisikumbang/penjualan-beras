@@ -23,7 +23,7 @@ if(false === $valid) response()->notFound();
     <form @submit.prevent="simpanData">
         <section id="errors">
             <?php if(session('temp')): ?>
-                <div class="mb-4 block w-full text-base font-regular px-4 py-4 rounded-lg bg-green-500 text-white">
+                <div class="mb-4 block w-full text-base font-regular px-4 py-4 rounded-lg bg-<?= session('temp')['color'] ?? 'yellow' ?>-500 text-white">
                     <?php echo session('temp')['message'] ?>
                 </div>
             <?php endif; ?>
@@ -56,7 +56,7 @@ if(false === $valid) response()->notFound();
                     </div>
                     <div class="mb-4">
                         <label for="first-name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Alamat Pengiriman</label>
-                        <textarea x-model="properties.form.alamat" type="number" class="shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none block w-full p-2.5" rows="5" required></textarea>
+                        <textarea x-model="properties.form.alamat" class="shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none block w-full p-2.5" rows="5" required></textarea>
                     </div>
                 </div>
                 <div class="ml-4">
@@ -203,9 +203,20 @@ if(false === $valid) response()->notFound();
                     }
                 },
                 "init": function() {
-                    this.properties.form.nama = this.properties.data.pesanan.nama_pesanan;
-                    this.properties.form.kontak = this.properties.data.pesanan.kontak_pesanan;
-                    this.properties.form.alamat = this.properties.data.pesanan.alamat_pengiriman;
+                    this.properties.form.nama = this.properties.data.pesanan.nama_pesanan === ''
+                        ||  this.properties.data.pesanan.nama_pesanan == undefined
+                        ? this.properties.data.pesanan.pemesan.nama
+                        : this.properties.data.pesanan.nama_pesanan;
+
+                    this.properties.form.kontak = this.properties.data.pesanan.kontak_pesanan === ''
+                        ||  this.properties.data.pesanan.kontak_pesanan == undefined
+                        ? this.properties.data.pesanan.pemesan.kontak
+                        : this.properties.data.pesanan.kontak_pesanan;
+
+                    this.properties.form.alamat = this.properties.data.pesanan.alamat_pengiriman === ''
+                        ||  this.properties.data.pesanan.alamat_pengiriman == undefined
+                        ? this.properties.data.pesanan.pemesan.alamat
+                        : this.properties.data.pesanan.alamat_pengiriman;
                 }
             })
         );
