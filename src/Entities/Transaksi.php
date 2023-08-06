@@ -151,6 +151,11 @@ class Transaksi implements EntityInterface
         $this->statusPembayaran = $statusPembayaran;
     }
 
+    public function isPaid()
+    {
+        return $this->getStatusPembayaran() == StatusPembayaran::LUNAS;
+    }
+
     public function toArray(): array
     {
         return [
@@ -163,7 +168,8 @@ class Transaksi implements EntityInterface
             'status_pembayaran_color' => $this->getStatusPembayaran()->getColor(),
             'konfirmasi_pembayaran' => $this->getKonfirmasiPembayaran()->getDisplay(),
             'konfirmasi_pembayaran_color' => $this->getKonfirmasiPembayaran()->getColor(),
-            'file_bukti_pembayaran' => $this->getFileBuktiPembayaran()
+            'file_bukti_pembayaran' => $this->getFileBuktiPembayaran(),
+            'lunas' => $this->isPaid()
         ];
     }
 
