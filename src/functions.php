@@ -47,6 +47,13 @@ if (!function_exists('public_url')) {
     }
 }
 
+if (!function_exists('assets')) {
+    function assets(string $url) : string
+    {
+        return site_url('assets/' . $url);
+    }
+}
+
 if(!(function_exists('get_current_path'))) {
     function get_current_route(bool $full = false) : string
     {
