@@ -11,8 +11,9 @@ class KelolaStok
         $this->stokRepository = new StokRepository();
     }
 
-    public function listStokBeras(int $total = 10, int $start = 0): array
+    public function listStokBeras(int $total = 10, int $start = 1): array
     {
+        $start = ($total * $start) - $total;
         $listStokBeras = $this->stokRepository->get($total, $start, withRelations: true);
 
         return array_map(fn($item) => $item->toArray(), $listStokBeras);

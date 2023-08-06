@@ -8,7 +8,7 @@ if (isset($_GET['page'])) {
 
 $page = $_GET['page'] ?? 1;
 
-$listStokBeras = app()->getManager()->getService('KelolaStok')->listStokBeras();
+$listStokBeras = app()->getManager()->getService('KelolaStok')->listStokBeras(10, $page);
 
 ?>
 <main x-data="container">
