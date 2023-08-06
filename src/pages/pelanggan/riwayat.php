@@ -62,11 +62,17 @@ $listPesananSaya = $kelolaPelanggan->listPesananByPelanggan(session()->auth());
                                 <p class="font-semibold" x-text="item.nomor_pesanan"></p>
                             </td>
                             <td class="p-4 text-gray-500 text-base text-center" x-text="tanggalToIndo(item.tanggal_pemesanan)"></td>
-                            <td class="p-4 text-gray-500 text-base text-center"><span x-text="item.nama_pesanan"></span></td>
-                            <td class="p-4 text-gray-500 text-base text-center"><span :class="'bg-' + item.transaksi.konfirmasi_pembayaran_color + '-400'" class="inline text-sm px-1 rounded text-white" x-text="item.transaksi.konfirmasi_pembayaran"></span></td>
+                            <td class="p-4 text-gray-500 text-base text-center">
+                                <span x-text="item.nama_pesanan"></span>
+                            </td>
+                            <td class="p-4 text-gray-500 text-base text-center">
+                                <span :class="'bg-' + item.transaksi.status_pembayaran_color + '-400'" class="inline text-sm px-1 rounded text-white" x-text="item.transaksi.status_pembayaran"></span>
+                            </td>
                             <td class="p-4 text-gray-500 text-base text-center" x-text="currencyToRupiah(item.total_tagihan)"></td>
                             <td class="p-4 text-gray-500 text-base text-center">
                                 <a class="text-red-500 hover:underline" :href="'<?= site_url('pelanggan/riwayat/detail?nomor=') ?>' + item.nomor_pesanan">Lihat Detail</a>
+                                <span>-</span>
+                                <a x-show="!item.lunas" class="text-red-500 hover:underline" :href="'<?= site_url('pelanggan/pembayaran?nomor=') ?>' + item.nomor_pesanan">Bayar</a>
                             </td>
                         </tr>
                     </template>
