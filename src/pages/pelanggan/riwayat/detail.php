@@ -18,7 +18,7 @@ $valid = $kelolaPesanan->cekPemilikPesanan($pesanan, $akun);
 
 if(false === $valid) response()->notFound();
 
-$lunas = $pesanan->getTransaksi()?->getStatusPembayaran()->value == 'LUNAS';
+$lunas = $pesanan->getTransaksi()?->isPaid();
 
 ?>
 <main>
@@ -39,15 +39,15 @@ $lunas = $pesanan->getTransaksi()?->getStatusPembayaran()->value == 'LUNAS';
                 </div>
                 <div class="border-b text-gray-900 py-1 mb-2">
                     <p class="font-medium">Nama Pemesan</p>
-                    <p><?= $pesanan->getNamaPesanan() ?> <small>(pelanggan)</small></p>
+                    <p><?= $pesanan->getNamaPesanan() ?? '-' ?> <small>(pelanggan)</small></p>
                 </div>
                 <div class="border-b text-gray-900 py-1 mb-2">
                     <p class="font-medium">Kontak Pemesan</p>
-                    <p><?= $pesanan->getKontakPesanan() ?></p>
+                    <p><?= $pesanan->getKontakPesanan() ?? '-' ?></p>
                 </div>
                 <div class="border-b text-gray-900 py-1 mb-2">
                     <p class="font-medium">Alamat Pengiriman</p>
-                    <p><?= $pesanan->getAlamatPengiriman() ?></p>
+                    <p><?= $pesanan->getAlamatPengiriman() ?? '-' ?></p>
                 </div>
                 <div class="items-center border-b text-gray-900 py-1 mb-2">
                     <p class="font-medium">Total Tagihan</p>
@@ -74,7 +74,12 @@ $lunas = $pesanan->getTransaksi()?->getStatusPembayaran()->value == 'LUNAS';
                 </div>
                 <div class="border-b text-gray-900 py-1 mb-2">
                     <p class="font-medium">Status Pembayaran</p>
-                    <p class="bg-<?= $lunas ? 'green' : 'yellow' ?>-400 inline text-sm px-1 rounded text-white"><?= $pesanan->getTransaksi()->getStatusPembayaran()->getDisplay() ?></p>
+                    <div class="flex justify-between items-center">
+                        <p class="bg-<?= $pesanan->getTransaksi()->getStatusPembayaran()->getColor() ?>-400 inline text-sm px-1 rounded text-white"><?= $pesanan->getTransaksi()->getStatusPembayaran()->getDisplay() ?></p>
+                        <?php if (!$lunas): ?>
+                            <a class="text-red-500 hover:underline" href="<?= site_url('pelanggan/pembayaran?nomor=' . $pesanan->getNomorPesanan()) ?>">Bayar Sekarang</a>
+                        <?php endif; ?>
+                    </div>
                 </div>
                 <div class="border-b text-gray-900 py-1 mb-2">
                     <p class="font-medium">Konfirmasi Pembayaran</p>
@@ -85,7 +90,7 @@ $lunas = $pesanan->getTransaksi()?->getStatusPembayaran()->value == 'LUNAS';
                 <h4 class="text-lg mb-2">Bukti Pembayaran:</h4>
                 <?php if($lunas): ?>
                     <img src="<?= site_url('uploaded/bukti-pembayaran/' . $pesanan->getTransaksi()->getFileBuktiPembayaran()) ?>" alt="<?= $pesanan->getNomorPesanan() ?>">
-                    <a href="<?= site_url('uploaded/bukti-pembayaran/' . $pesanan->getTransaksi()->getFileBuktiPembayaran()) ?>" class="bg-gray-400 text-center py-2 block text-white rounded mt-2 hover:bg-gray-500" download>Unduh bukti pembayaran</a>
+                    <a href="<?= site_url('uploaded/bukti-pembayaran/' . $pesanan->getTransaksi()->getFileBuktiPembayaran()) ?>" class="bg-gray-400 text-center py-2 block text-white rounded mt-2 hover:bg-gray-500" download>Unduh untuk melihat lebih detail.</a>
                 <?php else: ?>
                 <div>Tidak ada.</div>
                 <?php endif; ?>
@@ -102,10 +107,10 @@ $lunas = $pesanan->getTransaksi()?->getStatusPembayaran()->value == 'LUNAS';
                             Jenis Beras
                         </th>
                         <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
-                            Harga Satuan (Rp)
+                            Harga Satuan (Rupiah)
                         </th>
                         <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
-                            Jumlah Beli (kg)
+                            Jumlah Beli (satuan: Takaran)
                         </th>
                         <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
                             Total
@@ -121,15 +126,26 @@ $lunas = $pesanan->getTransaksi()?->getStatusPembayaran()->value == 'LUNAS';
                                 <p class="text-sm italic">Takaran: <?= $item->getTakaranBeras() ?></p>
                             </td>
                             <td class="p-4 text-gray-500 text-base text-center">Rp <?= rupiah($item->getHargaSatuan()) ?></td>
-                            <td class="p-4 text-gray-500 text-base text-center"><?= rupiah($item->getJumlahBeli()) ?> kg</td>
-                            <td class="p-4 text-gray-500 text-base text-center">Rp. <?= rupiah($item->getTotal()) ?></td>
+                            <td class="p-4 text-gray-500 text-base text-center">
+                                <?= rupiah($item->getJumlahBeli()) ?>
+                                x <?= $item->getTakaranBeras() ?>
+                            </td>
+                            <td class="p-4 text-gray-500 text-base text-right">Rp. <?= rupiah($item->getTotal()) ?></td>
                         </tr>
                     <?php endforeach; ?>
                     </tbody>
                     <tfoot>
                     <tr class="border-t">
-                        <td class="p-4 text-gray-500 text-base text-right" colspan="4">Total Tagihan :</td>
-                        <td class="p-4 text-gray-500 text-base text-center font-bold">Rp. <?= rupiah($pesanan->getTotalTagihan()) ?></td>
+                        <td class="text-gray-500 text-base text-right pt-4" colspan="4">Sub Total :</td>
+                        <td class="text-gray-500 text-base text-right pt-4 pr-4 font-bold">Rp. <?= rupiah($pesanan->getSubTotal()) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="text-gray-500 text-base text-right" colspan="4">Diskon :</td>
+                        <td class="text-gray-500 text-base text-right pr-4 font-bold">Rp. <?= rupiah($pesanan->getDiskon()) ?></td>
+                    </tr>
+                    <tr>
+                        <td class="text-gray-500 text-base text-right" colspan="4">Total Tagihan :</td>
+                        <td class="text-gray-500 text-base text-right pr-4 font-bold">Rp. <?= rupiah($pesanan->getTotalTagihan()) ?></td>
                     </tr>
                     </tfoot>
                 </table>
