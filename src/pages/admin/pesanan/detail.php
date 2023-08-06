@@ -61,15 +61,15 @@ $confirmable = ($pesanan->getTransaksi()->getStatusPembayaran()->name == 'LUNAS'
                     </div>
                     <div class="border-b text-gray-900 py-1 mb-2">
                         <p class="font-medium">Nama Pemesan</p>
-                        <p><?= $pesanan->getNamaPesanan() ?> <small>(pelanggan)</small></p>
+                        <p><?= $pesanan->getNamaPesanan() ?: '-' ?> <small>(pelanggan)</small></p>
                     </div>
                     <div class="border-b text-gray-900 py-1 mb-2">
                         <p class="font-medium">Kontak Pemesan</p>
-                        <p><?= $pesanan->getKontakPesanan() ?></p>
+                        <p><?= $pesanan->getKontakPesanan() ?: '-' ?></p>
                     </div>
                     <div class="border-b text-gray-900 py-1 mb-2">
                         <p class="font-medium">Alamat Pengiriman</p>
-                        <p><?= $pesanan->getAlamatPengiriman() ?></p>
+                        <p><?= $pesanan->getAlamatPengiriman() ?: '-' ?></p>
                     </div>
                     <div class="items-center border-b text-gray-900 py-1 mb-2">
                         <p class="font-medium">Total Tagihan</p>
