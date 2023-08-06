@@ -1,7 +1,7 @@
 <?php
 
 if (false === session()->isAuthenticatedAs('pelanggan')) html_unauthorized();
-$listBeras = app()->getManager()->getService('KelolaStok')->listStokBeras();
+$listBeras = app()->getManager()->getService('KelolaStok')->listStokBeras(100);
 
 ?>
 <main x-data="container">
