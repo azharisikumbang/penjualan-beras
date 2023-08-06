@@ -18,12 +18,17 @@ $valid = $kelolaPesanan->cekPemilikPesanan($pesanan, $akun);
 
 if(false === $valid) response()->notFound();
 
+if (false === $pesanan->informasiPengirimanIsFilled()) {
+    session()->add('temp', ['message' => 'Informasi pengiriman masih kosong, mohon diisi terlebih dahulu.', 'color' => 'red']);
+    response()->redirectTo(site_url('pelanggan/pengiriman?nomor='. $pesanan->getNomorPesanan()));
+}
+
 ?>
 <main x-data="container">
     <form @submit.prevent="simpanData">
         <section id="errors">
             <?php if(session('temp')): ?>
-                <div class="mb-4 block w-full text-base font-regular px-4 py-4 rounded-lg bg-green-500 text-white">
+                <div class="mb-4 block w-full text-base font-regular px-4 py-4 rounded-lg bg-<?= session('temp')['color'] ?? 'yellow' ?>-500 text-white">
                     <?php echo session('temp')['message'] ?>
                 </div>
             <?php endif; ?>
@@ -112,7 +117,8 @@ if(false === $valid) response()->notFound();
                         </div>
                     </div>
                     <div>
-                        <button type="submit" class="block text-sm w-full text-white bg-green-500 rounded py-2 px-4 hover:bg-green-600 text-center">Lanjutkan Pemesanan</button>
+                        <button type="submit" class="block text-sm w-full text-white bg-green-500 rounded py-2 px-4 hover:bg-green-600 text-center">Selesaikan Pesanan</button>
+                        <a :href="`${properties.sites.api_url}/pelanggan/riwayat/detail?nomor=${properties.data.pesanan.nomor_pesanan}`" class="block text-sm w-full text-white bg-gray-500 rounded py-2 px-4 hover:bg-gray-600 text-center mt-2 cursor-pointer">Bayar Nanti</a>
                     </div>
                 </div>
             </div>
