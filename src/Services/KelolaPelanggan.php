@@ -28,13 +28,13 @@ class KelolaPelanggan
         return $pelanggan;
     }
 
-    public function listPesananByPelanggan(Pelanggan|Akun $pelanggan): array
+    public function listPesananByPelanggan(Pelanggan|Akun $pelanggan, array $filters): array
     {
         $pelanggan = $pelanggan instanceof Pelanggan ? $pelanggan : $this->pelangganRepository->findByAkunId($pelanggan->getId());
         if(is_null($pelanggan)) return [];
 
         $kelolaPesanan = new KelolaPesanan();
-        return $kelolaPesanan->cariBerdasarkanPemesan($pelanggan, true);
+        return $kelolaPesanan->cariBerdasarkanPemesan($pelanggan, true, $filters);
     }
 
     public function perbaharuiDataPelanggan(Akun $akun, string $nama, string $kontak, string $alamat): bool

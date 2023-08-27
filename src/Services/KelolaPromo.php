@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../Repositories/PromoRepository.php';
+require_once __DIR__ . '/../Libraries/Whatsapp.php';
 
 class KelolaPromo
 {
@@ -69,5 +70,44 @@ class KelolaPromo
         }
 
         return $res;
+    }
+
+    public function broadcastPromo(array $targetPhoneNumbers, string $kupon) : bool
+    {
+        $promo = $this->cekKodeKupon($kupon);
+        if (is_null($promo)) return false;
+
+        $messageBody = [
+            ['type' => 'text', 'text' => $promo->getNominalDiskonAsString()], // nominal diskon,
+            ['type' => 'text', 'text' => $promo->getKodeKupon()], // kode promo
+            ['type' => 'text', 'text' => rupiah($promo->getMinimumPembelian())], // minimum pembelian
+            ['type' => 'text', 'text' => tanggal($promo->getTanggalKadaluarsa())], // tanggal kadaluarsa
+        ];
+
+        foreach ($targetPhoneNumbers as $phoneNumber)
+            Whatsapp::sendMessage($phoneNumber, $messageBody);
+
+        return true;
+    }
+
+    public function broadcastStaticPromo(array $targetPhoneNumbers, string $kupon): bool
+    {
+        $promo = $this->cekKodeKupon($kupon);
+        if (is_null($promo)) return false;
+
+        $messageBody = sprintf("Dapatkan promo dari Bumdes untuk sebesar *%s* dengan memakai kode kupon: %s dengan minimum pembelian Rp %s untuk semua jenis beras. 
+        
+Jangan sampai terlewat, promo hanya berlaku sampai dengan Sabtu, %s.",
+            $promo->getNominalDiskonAsString(),
+            $promo->getKodeKupon(),
+            rupiah($promo->getMinimumPembelian()),
+            tanggal($promo->getTanggalKadaluarsa())
+        );
+
+        foreach ($targetPhoneNumbers as $phoneNumber) {
+            Whatsapp::sentStaticMessage($phoneNumber, $messageBody);
+        }
+
+        return true;
     }
 }

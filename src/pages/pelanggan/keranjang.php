@@ -173,7 +173,7 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
                             window.location = `${alpineObj.properties.sites.api_url}/pelanggan/pengiriman?nomor=${response.data.data.nomor_pesanan}`
                         }, 2000)
                     },
-                    function (err) {
+                    function (error) {
                         alpineObj.addErrorMassage('bad_request', error.response.data.errors.message)
                     }
                 )
@@ -265,13 +265,13 @@ $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();
 
                 switch (selected) {
                     case '1' :
-                        this.properties.data.keranjang.items.sort((a, b) => ('' + a.detail.jenis).localeCompare(b.detail.jenis));
+                        this.properties.data.keranjang.items.sort((a, b) => ('' + a.detail.relations.beras.jenis).localeCompare(b.detail.relations.beras.jenis));
                         break;
                     case '2' :
-                        this.properties.data.keranjang.items.sort((a, b) => a.total_harga - b.total_harga);
+                        this.properties.data.keranjang.items.sort((a, b) => a.detail.harga - b.detail.harga);
                         break;
                     case '3' :
-                        this.properties.data.keranjang.items.sort((a, b) => b.total_harga - a.total_harga);
+                        this.properties.data.keranjang.items.sort((a, b) => b.detail.harga - a.detail.harga);
                         break;
                 }
             },

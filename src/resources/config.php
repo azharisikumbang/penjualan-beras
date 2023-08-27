@@ -16,5 +16,10 @@ return [
     ],
     'disk' => [
         'bukti_pembayaran' => __DIR__ . '/../storages/bukti-pembayaran/'
+    ],
+    'whatsapp'=> [
+        'token' => 'EAASxysSBPZAQBO2iqNqD7jzZAZCh0gdZCnc0cdxbZBZCei4wr7epAp2JedFgZCazGdUsFiZA3iaX1AZB6IlKZBKXBQqDwx5HApFhnpQ4qVIVTwDbeMNapZCpexZBJapLwISMRvamJZCBusMvcpZBxQegdmZBo3erJrnTtUogbwseJPMi76bfEGGq3EX67NAjSOCM4lMwaMwD0qgSo9TyZBwZC5AURBH93PEst6OlXMEhnPbUZD', // untuk uji coba berganti setiap 24 jam
+        'sender_number' => '107920529067316', // whatsapp test phone number (ganti dengan nomor telepon seharusnya)
+        'template' => 'promosi_kupon'
     ]
 ];

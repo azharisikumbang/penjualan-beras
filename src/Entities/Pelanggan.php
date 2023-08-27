@@ -63,7 +63,7 @@ class Pelanggan implements EntityInterface
      */
     public function setKontak(string $kontak): void
     {
-        $this->kontak = $kontak;
+        $this->kontak = $this->tranformPhoneNumberToCountryCode($kontak);
     }
 
     /**
@@ -114,6 +114,16 @@ class Pelanggan implements EntityInterface
         $this->akunId = $akunId;
     }
 
+    private function tranformPhoneNumberToCountryCode(string $nomor)
+    {
+        $nomor = trim($nomor);
+
+        if(substr($nomor, 0, 1) == "0") {
+            $nomor = "62" . substr($nomor, 1);
+        }
+
+        return $nomor;
+    }
 
     public function toArray(): array
     {

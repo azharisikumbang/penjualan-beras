@@ -94,9 +94,9 @@ $confirmable = ($pesanan->getTransaksi()->getStatusPembayaran()->name == 'LUNAS'
                         <p class="font-medium">Nominal Dibayarkan</p>
                         <p>Rp <?= ($lunas) ? rupiah($pesanan->getTransaksi()->getNominalDibayarkan()) : '-' ?></p>
                     </div>
-                    <div class="border-b text-gray-900 py-1 mb-2">
+                        <div class="border-b text-gray-900 py-1 mb-2">
                         <p class="font-medium">Status Pembayaran</p>
-                        <p class="bg-<?= $lunas ? 'green' : 'yellow' ?>-400 inline text-sm px-1 rounded text-white"><?= $pesanan->getTransaksi()->getStatusPembayaran()->getDisplay() ?></p>
+                        <p class="bg-<?= $pesanan->getTransaksi()->getStatusPembayaran()->getColor(); ?>-400 inline text-sm px-1 rounded text-white"><?= $pesanan->getTransaksi()->getStatusPembayaran()->getDisplay() ?></p>
                     </div>
                     <div class="border-b text-gray-900 py-1 mb-2">
                         <p class="font-medium">Konfirmasi Pembayaran</p>
@@ -143,7 +143,7 @@ $confirmable = ($pesanan->getTransaksi()->getStatusPembayaran()->name == 'LUNAS'
                                     <p class="text-sm italic">Takaran: <?= $item->getTakaranBeras() ?></p>
                                 </td>
                                 <td class="p-4 text-gray-500 text-base text-center">Rp <?= rupiah($item->getHargaSatuan()) ?></td>
-                                <td class="p-4 text-gray-500 text-base text-center"><?= rupiah($item->getJumlahBeli()) ?> kg</td>
+                                <td class="p-4 text-gray-500 text-base text-center"><?= rupiah($item->getJumlahBeli()) ?> x <?= $item->getTakaranBeras() ?></td>
                                 <td class="p-4 text-gray-500 text-base text-center">Rp. <?= rupiah($item->getTotal()) ?></td>
                             </tr>
                         <?php endforeach; ?>

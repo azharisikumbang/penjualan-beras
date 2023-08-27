@@ -9,6 +9,7 @@ $kodePromo = $_POST['kode_kupon_promo'];
 
 /** @var $pelanggan Pelanggan */
 $pelanggan = app()->getManager()->getService('InformasiPelanggan')->cariInformasiBerdasarkanAkun(session()->auth());
+if (false === $pelanggan) response()->badRequest(['message' => 'Server error, mohon kontak administrator.']);
 
 /** @var $keranjang Keranjang */
 $keranjang = app()->getManager()->getService('KelolaKeranjang')->get();

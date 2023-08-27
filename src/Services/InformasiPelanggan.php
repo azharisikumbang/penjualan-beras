@@ -28,10 +28,12 @@ class InformasiPelanggan
 
     public function cariInformasiBerdasarkanAkun(int|Akun $akun): false|Pelanggan
     {
-        $id = is_int($akun) ? $akun : $akun->getId();
-        if(!$this->akunRepository->exists($id)) return false;
+        $akun = is_int($akun) ? $this->akunRepository->findById($akun) : $akun;
+        if (is_null($akun)) return false;
 
-        $pelanggan = $this->pelangganRepository->findByAkunId($id);
+        $pelanggan = $this->pelangganRepository->findByAkunId($akun->getId());
+        if (is_null($pelanggan)) return false;
+
         $pelanggan->setAkun($akun);
 
         return $pelanggan;

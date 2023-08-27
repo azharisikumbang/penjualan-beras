@@ -2,8 +2,6 @@
 
 if (false === session()->isAuthenticatedAs('pelanggan')) html_unauthorized();
 
-$listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
-
 ?>
 <main>
     <div class="p-6 bg-white rounded-lg border">

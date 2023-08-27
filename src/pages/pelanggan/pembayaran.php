@@ -45,7 +45,7 @@ if (false === $pesanan->informasiPengirimanIsFilled()) {
         </section>
         <div class="p-6 bg-white rounded-lg border">
             <div class="mb-4 col-span-full">
-                <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Informasi Pengiriman</h1>
+                <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white">Informasi Pembayaran</h1>
             </div>
             <div class="grid grid-cols-3">
                 <div class="col-span-2">
@@ -70,7 +70,7 @@ if (false === $pesanan->informasiPengirimanIsFilled()) {
                 <div class="ml-4">
                     <div class="rounded border border-blue-600 p-4 mb-4 text-blue-600">
                         <strong>Informasi Pembayaran !</strong>
-                        <p>Silahkan lakukan pembayaran ke Bank XXX a/n Arief Habibie dengan no. 123-456-77877-2, kemudian isi informasi pembayaran dengan sebenar-benarnya.</p>
+                        <p>Silahkan lakukan pembayaran ke Bank BRI a/n SUHERMEN dengan no. 5461-01-022-884532, kemudian isi informasi pembayaran dengan sebenar-benarnya.</p>
                     </div>
                     <div class="text-gray-600 border rounded border-gray-300 p-4 mb-4">
                         <h4 class="text-lg font-bold mb-2">Informasi Pemesanan</h4>

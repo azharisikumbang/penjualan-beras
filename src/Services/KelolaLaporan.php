@@ -57,7 +57,7 @@ class KelolaLaporan
                     [ 'type' => 'text', 'value' => $pesanan->getAlamatPengiriman() ], // Alamat Pengiriman
                     [ 'type' => 'text', 'value' => $pesanan->getTransaksi()->getStatusPembayaran()->getDisplay() ], // Status Pembayaran
                     [ 'type' => 'text', 'value' => $pesanan->getTransaksi()->getKonfirmasiPembayaran()->getDisplay() ], // Konfirmasi Admin
-                    [ 'type' => 'date', 'value' => $pesanan->getTransaksi()->getTanggalPembayaran()->format('Y-m-d H:i:s') ], // Tanggal Pembayaran
+                    [ 'type' => 'date', 'value' => $pesanan->getTransaksi()->getTanggalPembayaran()?->format('Y-m-d H:i:s') ], // Tanggal Pembayaran
                     [ 'type' => 'text', 'value' => $pesanan->getTransaksi()->getNamaPembayaran() ], // Atas Nama Pembayaran
                     [ 'type' => 'text', 'value' => $pesanan->getTransaksi()->getBankPembayaran() ], // Bank Pembayaran
                     [ 'type' => 'currency', 'value' => $pesanan->getTransaksi()->getNominalDibayarkan() ] // Nominal Dibayarkan

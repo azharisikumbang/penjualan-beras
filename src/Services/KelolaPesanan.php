@@ -214,9 +214,9 @@ class KelolaPesanan
         return $nominal >= $pesanan->getTotalTagihan();
     }
 
-    public function cariBerdasarkanPemesan(int|Pelanggan $pelanggan, bool $detail = false): array
+    public function cariBerdasarkanPemesan(int|Pelanggan $pelanggan, bool $detail = false, array $filters = []): array
     {
-        return $this->pesananRepository->findByPemesanId($pelanggan, $detail);
+        return $this->pesananRepository->findByPemesanId($pelanggan, $detail, $filters);
     }
 
     public function cekApakahKodePromoSudahTerpakai(string $kode, int $pelanggan) : bool

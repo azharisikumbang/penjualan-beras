@@ -39,7 +39,7 @@ class PesananRepository extends BaseRepository
             return $this->toPesanan($stmt->fetch(PDO::FETCH_ASSOC));
         }
 
-        $query = $this->queryGetWithRelations($appendQuery);
+        $query = $this->queryGetWithRelations($appendQuery, 1, 0);
         $stmt = $this->execute($query, ['nomor_pesanan' => $nomor]);
 
         if($stmt->rowCount() < 1) return null;
@@ -223,20 +223,35 @@ class PesananRepository extends BaseRepository
         return false;
     }
 
-    public function findByPemesanId(Pelanggan $pelanggan, bool $detail = false) : array
+    public function findByPemesanId(Pelanggan $pelanggan, bool $detail = false, array $filters = []) : array
     {
-        $appendQuery = "WHERE p.pemesan_id = :pemesan_id";
+        $appendQuery = "WHERE pemesan_id = :pemesan_id";
+        $whereList = ['pemesan_id' => $pelanggan->getId()];
+        $total = 10;
+        $start = 0;
+
+        if ($filters) {
+            if (isset($filters['search'])) {
+                $appendQuery .= " AND nomor_pesanan = :nomor_pesanan";
+                $whereList['nomor_pesanan'] = $filters['search'];
+            }
+
+            if (isset($filters['page'])) {
+                $start = ($total * $filters['page']) - $total;
+            }
+        }
+
         if(!$detail) {
             $query = $this->queryGetWithoutRelations($appendQuery);
-            $stmt = $this->execute($query, ['pemesan_id' => $pelanggan->getId()]);
+            $stmt = $this->execute($query, $whereList);
 
             if($stmt->rowCount() < 1) return [];
 
             return [$this->toPesanan($stmt->fetch(PDO::FETCH_ASSOC))];
         }
 
-        $query = $this->queryGetWithRelations($appendQuery);
-        $stmt = $this->execute($query, ['pemesan_id' => $pelanggan->getId()]);
+        $query = $this->queryGetWithRelations($appendQuery, $total, $start);
+        $stmt = $this->execute($query, $whereList);
 
         if($stmt->rowCount() < 1) return [];
 
@@ -312,12 +327,11 @@ class PesananRepository extends BaseRepository
                 $whereList['konfirmasi_pembayaran'] = $searchable['konfirmasi_pembayaran'];
             }
 
-            $appendQuery = "WHERE";
+            $appendQuery .= "WHERE";
             $appendQuery .= implode(" AND ", $appendQueryList);
-            $appendQuery .= " ORDER BY p.tanggal_pemesanan LIMIT {$total} OFFSET {$start}";
         }
 
-        $query = $this->queryGetWithRelations($appendQuery);
+        $query = $this->queryGetWithRelations($appendQuery, $total, $start);
         $stmt = $this->execute($query, $whereList);
 
         if($stmt->rowCount() < 1) return [];
@@ -466,34 +480,40 @@ class PesananRepository extends BaseRepository
         return $pesanan;
     }
 
-    private function queryGetWithRelations(string $append = '') : string
+    private function queryGetWithRelations(string $append = '', int $limit = 10, int $offset = 0) : string
     {
-        return "SELECT p.*, 
-            dp.jenis_beras as dp_jenis_beras,
-            dp.takaran_beras as dp_takaran_beras,
-            dp.harga_satuan as dp_harga_satuan,
-            dp.jumlah_beli as dp_jumlah_beli,
-            dp.total as dp_total,
-            dp.id as dp_id,
-            dp.ref_beras_id as dp_ref_beras_id,
-            dp.ref_takaran_id as dp_ref_takaran_id,
-            t.id as t_id,
-            t.tanggal_pembayaran as t_tanggal_pembayaran,
-            t.nama_pembayaran as t_nama_pembayaran,
-            t.bank_pembayaran as t_bank_pembayaran,
-            t.nominal_dibayarkan as t_nominal_dibayarkan,
-            t.status_pembayaran as t_status_pembayaran,
-            t.konfirmasi_pembayaran as t_konfirmasi_pembayaran,
-            t.file_bukti_pembayaran as t_file_bukti_pembayaran,
-            p2.id as p2_id,
-            p2.nama as p2_nama,
-            p2.kontak as p2_kontak,
-            p2.alamat as p2_alamat,
-            p2.akun_id as p2_akun_id
-        FROM {$this->getTable()} p
-        LEFT JOIN detail_pesanan dp on p.id = dp.pesanan_id
-        LEFT JOIN transaksi t on p.id = t.pesanan_id
-        LEFT JOIN pelanggan p2 on p2.id = p.pemesan_id {$append}";
+        return "SELECT q.*,
+               dp.jenis_beras as dp_jenis_beras,
+               dp.takaran_beras as dp_takaran_beras,
+               dp.harga_satuan as dp_harga_satuan,
+               dp.jumlah_beli as dp_jumlah_beli,
+               dp.total as dp_total,
+               dp.id as dp_id,
+               dp.ref_beras_id as dp_ref_beras_id,
+               dp.ref_takaran_id as dp_ref_takaran_id,
+               t.id as t_id,
+               t.tanggal_pembayaran as t_tanggal_pembayaran,
+               t.nama_pembayaran as t_nama_pembayaran,
+               t.bank_pembayaran as t_bank_pembayaran,
+               t.nominal_dibayarkan as t_nominal_dibayarkan,
+               t.status_pembayaran as t_status_pembayaran,
+               t.konfirmasi_pembayaran as t_konfirmasi_pembayaran,
+               t.file_bukti_pembayaran as t_file_bukti_pembayaran,
+               p2.id as p2_id,
+               p2.nama as p2_nama,
+               p2.kontak as p2_kontak,
+               p2.alamat as p2_alamat,
+               p2.akun_id as p2_akun_id
+            FROM (
+                SELECT p.*
+                FROM {$this->getTable()} p
+                {$append}
+                ORDER BY nomor_pesanan DESC
+                LIMIT {$limit} OFFSET {$offset}
+                 ) as q
+            LEFT JOIN detail_pesanan dp on q.id = dp.pesanan_id
+            LEFT JOIN transaksi t on q.id = t.pesanan_id
+            LEFT JOIN pelanggan p2 on p2.id = q.pemesan_id";
     }
 
     private function queryGetWithoutRelations(string $append = '') : string

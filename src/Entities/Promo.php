@@ -124,6 +124,15 @@ class Promo implements EntityInterface
         return $this->getPotonganHarga() <= 100;
     }
 
+    public function getNominalDiskonAsString()
+    {
+        if ($this->isPercent()) {
+            return $this->getPotonganHarga() . " %";
+        }
+
+        return rupiah($this->getPotonganHarga());
+    }
+
     public function toArray(): array
     {
         return [

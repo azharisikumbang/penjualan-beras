@@ -16,7 +16,7 @@ $listPelanggan = $service->listPelanggan();
 <main x-data="container">
     <div class="px-4 pt-6">
         <div class="mb-4 col-span-full">
-            <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white" ref="title">Kelola Data Karyawan</h1>
+            <h1 class="text-xl font-semibold text-gray-900 sm:text-2xl dark:text-white" ref="title">Kelola Data Pelanggan</h1>
         </div>
         <div>
             <div class="px-4 py-4 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm">
@@ -104,7 +104,7 @@ $listPelanggan = $service->listPelanggan();
                         "normal": []
                     },
                     "data": {
-                        "list_pelanggan": JSON.parse('<?= json_encode(array_map(fn ($item) => $item->toArray(), $listPelanggan)) ?>'),
+                        "list_pelanggan": JSON.parse('<?= json_encode(array_map(fn ($item) => $item->toArray(), $listPelanggan)) ?>')
                     },
                     "form": {}
                 },

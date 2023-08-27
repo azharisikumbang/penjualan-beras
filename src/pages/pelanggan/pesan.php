@@ -271,13 +271,13 @@ $listBeras = app()->getManager()->getService('KelolaStok')->listStokBeras(100);
 
                 switch (selected) {
                     case '1' :
-                        this.properties.data.list_beras.sort((a, b) => ('' + a.jenis).localeCompare(b.jenis));
+                        this.properties.data.list_stok_beras.sort((a, b) => ('' + a.relations.beras.jenis).localeCompare(b.relations.beras.jenis));
                         break;
                     case '2' :
-                        this.properties.data.list_beras.sort((a, b) => a.harga - b.harga);
+                        this.properties.data.list_stok_beras.sort((a, b) => a.harga - b.harga);
                         break;
                     case '3' :
-                        this.properties.data.list_beras.sort((a, b) => b.harga - a.harga);
+                        this.properties.data.list_stok_beras.sort((a, b) => b.harga - a.harga);
                         break;
                 }
             }
