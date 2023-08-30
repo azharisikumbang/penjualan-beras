@@ -36,6 +36,7 @@ final class Database implements DatabaseInterface
             $this->instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             echo $e->getMessage();
+            exit();
         }
 
         return $this->instance;

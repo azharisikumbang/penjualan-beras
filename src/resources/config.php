@@ -9,9 +9,9 @@ return [
     ],
     'database' => [
         'host' => 'localhost',
-        'username' => 'root',
-        'password' => '',
-        'database' => 'bumdus_kanterleans',
+        'username' => 'bumdes_kanterleans',
+        'password' => '12345678',
+        'database' => 'bumdes_kanterleans',
         'port' => 3306
     ],
     'disk' => [

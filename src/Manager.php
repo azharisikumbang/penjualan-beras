@@ -97,7 +97,7 @@ class Manager implements ManagerInterface
 
     public function getEntity(string $name): mixed
     {
-        $filename = sprintf("%s/entities/%s.php", __DIR__, $name);
+        $filename = sprintf("%s/Entities/%s.php", __DIR__, $name);
         if (file_exists($filename)) {
             require_once $filename;
 
@@ -109,19 +109,19 @@ class Manager implements ManagerInterface
 
     public function getService(string $name): mixed
     {
-        $filename = sprintf("%s/services/%s.php", __DIR__, $name);
+        $filename = sprintf("%s/Services/%s.php", __DIR__, $name);
         if (file_exists($filename)) {
             require_once $filename;
 
             return new $name;
         }
 
-        return null;
+        throw new Exception("Server Error: Service $name Not Found.");
     }
 
     public function getRepository(string $name): mixed
     {
-        $filename = sprintf("%s/repositories/%s.php", __DIR__, $name);
+        $filename = sprintf("%s/Repositories/%s.php", __DIR__, $name);
         if (file_exists($filename)) {
             require_once $filename;
 
