@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bumdes Kanterleas - Panel Pimpinan</title>
     <script src="<?= assets('js/alpinejs.min.js') ?>" defer></script>
     <link rel="stylesheet" href="<?= assets('css/build.css') ?>">
 </head>
@@ -22,7 +23,7 @@
                     </span>
                 <a href="<?= site_url() ?>" class="flex text-gray-600 ml-2 md:mr-24">
                     <!-- <img src="https://flowbite-admin-dashboard.vercel.app/images/logo.svg" class="h-8 mr-3" alt="FlowBite Logo">-->
-                    <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">BUMDES - Admin Panel</span>
+                    <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">BUMDES - Panel Pimpinan</span>
                 </a>
             </div>
             <div class="italic text-sm text-gray-400">
@@ -39,7 +40,7 @@
                 <div class="flex-1 px-3 space-y-1 bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                     <ul class="pb-2 space-y-2">
                         <li>
-                            <a href="https://flowbite-admin-dashboard.vercel.app/" class="flex font-semibold items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
+                            <a href="<?= site_url('pimpinan/beranda') ?>" class="flex font-semibold items-center p-2 text-base text-gray-900 rounded-lg hover:bg-gray-100 group dark:text-gray-200 dark:hover:bg-gray-700">
                                 <svg class="w-6 h-6 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
                                     <path d="M16.975 11H10V4.025a1 1 0 0 0-1.066-.998 8.5 8.5 0 1 0 9.039 9.039.999.999 0 0 0-1-1.066h.002Z"/>
                                     <path d="M12.5 0c-.157 0-.311.01-.565.027A1 1 0 0 0 11 1.02V10h8.975a1 1 0 0 0 1-.935c.013-.188.028-.374.028-.565A8.51 8.51 0 0 0 12.5 0Z"/>

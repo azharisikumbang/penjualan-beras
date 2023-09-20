@@ -52,12 +52,9 @@ $listFilterKonfirmasiPembayaran = KonfirmasiPembayaran::toArray();
                     <div class="flex items-center">
                         <span class="mr-2">Pencarian: </span>
                         <form action="" method="GET" class="flex flex-row justify-start items-center">
-                            <div class="flex justify-start w-96 text-sm">
-                                <input value="<?= $search ?? '' ?>" type="text" name="search" class="w-64 text-sm bg-gray-50 border rounded-lg border-gray-300 text-gray-900 p-2" placeholder="Ketik nomor pesanan...">
-                                <button type="submit" class="ml-1 text-sm bg-blue-700 border rounded-lg border-blue-700 text-white px-4 py-2 cursor-pointer hover:bg-blue-800 hover:border-blue-800 ">
-                                    <svg class="w-4 h-4 inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
-                                    </svg>
+                            <div class="flex justify-start w-72 text-sm">
+                                <input value="<?= $search ?? '' ?>" type="text" name="search" class="text-sm bg-gray-50 border rounded-lg border-gray-300 text-gray-900 p-2" placeholder="Ketik nomor pesanan...">
+                                <button type="submit" class="ml-1 text-sm bg-blue-700 border rounded-lg border-blue-700 text-white px-2 py-1 cursor-pointer hover:bg-blue-800 hover:border-blue-800 ">
                                     Cari
                                 </button>
                             </div>
@@ -65,7 +62,7 @@ $listFilterKonfirmasiPembayaran = KonfirmasiPembayaran::toArray();
                     </div>
                     <div class="flex items-center">
                         <span class="mr-2">Filter: </span>
-                        <form action="" method="get">
+                        <form action="" method="get" class="flex items-center gap-2">
                             <select name="periode" class="text-sm bg-gray-50 border rounded-lg border-gray-300 text-gray-900 p-2 cursor-pointer">
                                 <option value="-1">-- Pilih Periode Pemesanan--</option>
                                 <option value="-1" <?= ('-1' == $filterPeriode) ? 'selected' : '' ?>>periode: Tampilkan Semua</option>

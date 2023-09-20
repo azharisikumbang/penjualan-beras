@@ -8,7 +8,7 @@ if (isset($_GET['page'])) {
 
 $page = $_GET['page'] ?? 1;
 
-$listBeras = app()->getManager()->getService('KelolaBeras')->listBeras();
+$listBeras = app()->getManager()->getService('KelolaBeras')->listBeras(100);
 $listTakaran = app()->getManager()->getService('KelolaTakaran')->listTakaran();
 
 ?>

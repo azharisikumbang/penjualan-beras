@@ -86,8 +86,10 @@ $listPesananSaya = $kelolaPelanggan->listPesananByPelanggan(session()->auth(), $
                             <td class="p-4 text-gray-500 text-base text-center" x-text="currencyToRupiah(item.total_tagihan)"></td>
                             <td class="p-4 text-gray-500 text-base text-center">
                                 <a class="text-red-500 hover:underline" :href="'<?= site_url('pelanggan/riwayat/detail?nomor=') ?>' + item.nomor_pesanan">Lihat Detail</a>
-                                <span>-</span>
-                                <a x-show="!item.lunas" class="text-red-500 hover:underline" :href="'<?= site_url('pelanggan/pembayaran?nomor=') ?>' + item.nomor_pesanan">Bayar</a>
+                                <div x-show="!item.transaksi.lunas" class="inline">
+                                    <span>-</span>
+                                    <a class="text-red-500 hover:underline" :href="'<?= site_url('pelanggan/pembayaran?nomor=') ?>' + item.nomor_pesanan">Bayar</a>
+                                </div>
                             </td>
                         </tr>
                     </template>

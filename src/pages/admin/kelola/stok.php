@@ -42,7 +42,7 @@ $listStokBeras = app()->getManager()->getService('KelolaStok')->listStokBeras(10
                 <div class="px-4 py-8 mb-4 bg-white border border-gray-200 rounded-lg shadow-sm">
                     <form action="#" method="GET" class="flex flex-row justify-start items-center">
                         <div class="flex justify-end w-2/6 ">
-                            <input type= "text" name="email" id="products-search" class="bg-gray-50 border rounded-bl-lg rounded-tl-lg border-gray-300 text-gray-900 sm:text-sm focus:border-gray-200 focus:border-gray-200 outline-none block w-full p-2.5" placeholder="Cari produk">
+                            <input type= "text" name="email" id="products-search" class="bg-gray-50 border rounded-bl-lg rounded-tl-lg border-gray-300 text-gray-900 sm:text-sm focus:border-gray-200 focus:border-gray-200 outline-none block w-full p-2.5" placeholder="Cari jenis beras...">
                             <buttton type="submit" class="border border-gray-300 cursor-pointer rounded-tr-lg rounded-br-lg bg-gray-100 hover:bg-yellow-800 px-5 py-2 focus:outline-none outline-none hover:bg-gray-200">
                                 <svg class="w-5 h-6 text-gray-100" viewBox="0 0 20 20">
                                     <path d="M19.129,18.164l-4.518-4.52c1.152-1.373,1.852-3.143,1.852-5.077c0-4.361-3.535-7.896-7.896-7.896

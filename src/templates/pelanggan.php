@@ -1,7 +1,5 @@
 <?php
 
-/* TODO: change logo */
-
 $route = strtolower(get_current_route());
 /** @var $akun Akun */ $akun = session()->auth();
 
@@ -11,6 +9,7 @@ $route = strtolower(get_current_route());
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bumdes Kanterleas - Pelaggan</title>
     <script src="<?= assets('js/alpinejs.min.js') ?>" defer></script>
     <link rel="stylesheet" href="<?= assets('css/build.css') ?>">
 </head>
@@ -55,7 +54,7 @@ $route = strtolower(get_current_route());
     </nav>
     <!-- main -->
     <div class="py-8 bg-gray-50 w-full">
-        <div class="max-w-screen-2xl mx-auto">
+        <div class="max-w-screen-2xl mx-auto px-4">
             <?php require_once $content; ?>
         </div>
     </div>
