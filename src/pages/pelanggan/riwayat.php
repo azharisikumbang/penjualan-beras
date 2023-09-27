@@ -59,7 +59,10 @@ $listPesananSaya = $kelolaPelanggan->listPesananByPelanggan(session()->auth(), $
                         Atas Nama Pemesan
                     </th>
                     <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
-                        Status Pemesanan
+                        Status Pembayaran
+                    </th>
+                    <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
+                        Konfirmasi Penjual
                     </th>
                     <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
                         Total Tagihan
@@ -82,6 +85,9 @@ $listPesananSaya = $kelolaPelanggan->listPesananByPelanggan(session()->auth(), $
                             </td>
                             <td class="p-4 text-gray-500 text-base text-center">
                                 <span :class="'bg-' + item.transaksi.status_pembayaran_color + '-400'" class="inline text-sm px-1 rounded text-white" x-text="item.transaksi.status_pembayaran"></span>
+                            </td>
+                            <td class="p-4 text-gray-500 text-base text-center">
+                                <span :class="'bg-' + item.transaksi.konfirmasi_pembayaran_color + '-400'" class="inline text-sm px-1 rounded text-white" x-text="item.transaksi.konfirmasi_pembayaran"></span>
                             </td>
                             <td class="p-4 text-gray-500 text-base text-center" x-text="currencyToRupiah(item.total_tagihan)"></td>
                             <td class="p-4 text-gray-500 text-base text-center">
