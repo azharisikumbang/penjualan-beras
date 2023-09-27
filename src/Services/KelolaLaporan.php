@@ -24,8 +24,7 @@ class KelolaLaporan
             'Jenis Beras',
             'Takaran Penjualan',
             'Harga Per Takaran',
-            'Stok Tersisa (Takaran)',
-            'Terjual (Takaran)'
+            'Stok Tersisa (Takaran)'
         ];
 
         return $this->createFromTemplate($data, $headers);
@@ -213,11 +212,95 @@ class KelolaLaporan
     /**
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
-    public function forceDownloadSpreadsheet(Spreadsheet $spreadsheet, string $filename)
+    public function forceDownloadSpreadsheet(Spreadsheet $spreadsheet, string $filename): void
     {
         $writer = new Xlsx($spreadsheet);
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment; filename="'. $filename  .'"');
         $writer->save('php://output');
+    }
+
+    public function laporanPemasukanPerPeriode(int $tahun, int $bulan, int $tanggal): array
+    {
+        $transaksiRepository = new TransaksiRepository();
+
+        $data = $transaksiRepository->getDataForLaporanPemasukan($tahun, $bulan, $tanggal);
+        $total = count($data) ? $data[0]['total'] : 0;
+
+        if ($bulan < 1) {
+            $total = 0; // reset totla ke 0 karena akan dihitungg kembali
+            $tempData = [];
+            for ($i = 1; $i <= 12; $i++) {
+                $x = [
+                    'type' => 'YEAR',
+                    'periode' => $i,
+                    'total' => 0
+                ];
+
+                foreach ($data as $d) {
+                    if ($d['periode'] == $i) {
+                        $x['total'] = $d['total'];
+                        $total += $d['total'];
+                    }
+                }
+
+                $tempData[] = $x;
+            }
+
+            $data = $tempData;
+        }
+
+        return [
+            'query' => [
+                'tahun' => $tahun,
+                'bulan' => $bulan,
+                'tanggal' => $tanggal
+            ],
+            'data' => $data,
+            'total' => $total
+        ];
+    }
+
+    public function laporanPenjualanBerasPerPeriode(int $tahun, int $bulan, int $tanggal)
+    {
+        $transaksiRepository = new TransaksiRepository();
+        $stokRepository = new StokRepository();
+
+        $listBeras = $stokRepository->get(100);
+        $data = $transaksiRepository->getDataForLaporanPenjualan($tahun, $bulan, $tanggal);
+
+        // pisah penjualan berdasarkan jenis dan takaran beras
+        $temp = [];
+        foreach ($listBeras as $beras) {
+            foreach ($data as $d) {
+                /** @var Stok $beras */
+                if ($beras->getBerasId() == $d['b_beras_id'] && $beras->getTakaranId() == $d['vt_variant_id']) {
+                    $temp[$d['periode']][] = $d;
+                }
+            }
+        }
+
+        $result = $temp;
+        if ($bulan < 1) {
+            $result = [];
+            for ($i = 1; $i <= 12; $i++) {
+                $result[$i] = $temp[$i] ?? [[
+                    'type' => 'YEAR',
+                    'periode' => $i,
+                    'terjual' => 0,
+                    'jenis' => 'Tidak Ada.',
+                    'variant' => 'Tidak Ada.'
+                ]];
+            }
+        }
+
+        return [
+            'query' => [
+                'tahun' => $tahun,
+                'bulan' => $bulan,
+                'tanggal' => $tanggal
+            ],
+            'data' => array_values($result)
+        ];
     }
 }

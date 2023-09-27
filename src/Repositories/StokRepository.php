@@ -199,16 +199,14 @@ class StokRepository
     public function getDataForLaporanStokBeras() : array
     {
         $query = "SELECT
-                b.jenis as b_jenis,
-                vt.variant as vt_variant,
-                SUM(dp.jumlah_beli) as stok_terjual,
-                s.jumlah_stok,
-                s.harga
-            FROM stok s
-            JOIN varian_takaran vt on vt.id = s.varian_takaran_id
-            JOIN beras b on b.id = s.beras_id
-            LEFT JOIN detail_pesanan dp on dp.ref_beras_id = s.beras_id AND dp.ref_takaran_id = s.varian_takaran_id
-            GROUP BY s.beras_id, s.varian_takaran_id";
+            b.jenis as b_jenis,
+            v.variant as vt_variant,
+            s.jumlah_stok as jumlah_stok,
+            s.harga
+        FROM beras b
+        LEFT OUTER JOIN stok s on b.id = s.beras_id
+        LEFT OUTER JOIN varian_takaran v on s.varian_takaran_id = v.id
+        ORDER BY b.jenis, v.variant";
 
         $stmt = $this->getDatabaseConnection()->prepare($query);
         $stmt->execute();
@@ -234,9 +232,6 @@ class StokRepository
                 ],[
                     'type' => 'number',
                     'value' => $row['jumlah_stok']
-                ],[
-                    'type' => 'number',
-                    'value' =>  (int) $row['stok_terjual']
                 ]
             ];
         }
