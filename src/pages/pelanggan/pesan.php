@@ -65,7 +65,7 @@ $listBeras = app()->getManager()->getService('KelolaStok')->listStokBeras(100);
                                 Harga (Rupiah)
                             </th>
                             <th scope="col" class="p-4 text-xs font-medium text-left text-gray-500 uppercase">
-                                Stok Tersedia (kg)
+                                Stok Tersedia * (Dikali: Takaran)
                             </th>
                             <th scope="col" class="p-4 text-xs font-medium text-center text-gray-500 uppercase">
                             </th>
@@ -85,8 +85,8 @@ $listBeras = app()->getManager()->getService('KelolaStok')->listStokBeras(100);
                                     </p>
                                 </td>
                                 <td class="p-4 whitespace-nowrap">
-                                    <p class="text-base text-gray-600">
-                                        <span class="" x-text="addDotToNumber(item.jumlah_stok)"></span> Kg
+                                    <p class="text-base text-gray-600 text-center">
+                                        <span class="" x-text="addDotToNumber(item.jumlah_stok)"></span> Karung
                                     </p>
                                 </td>
                                 <td class="p-4 space-x-2 whitespace-nowrap flex justify-end">

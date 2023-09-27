@@ -196,6 +196,13 @@ if(!(function_exists('require_vendor'))) {
     }
 }
 
+if(!(function_exists('template_dir'))) {
+    function template_dir(string $template) : string
+    {
+        return __DIR__ . '/templates/' . $template . '.php';
+    }
+}
+
 if(!(function_exists('dd'))) {
     function dd(mixed ...$data) : void
     {
