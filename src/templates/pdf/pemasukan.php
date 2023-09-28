@@ -31,14 +31,46 @@
         'Desember'
     ];
 
-    // variable $data is served by app
-    $no = 1;
     /** @var $data array */
-    foreach ($data['data'] as $d) { ?>
+    if ($data['data']) {
+
+        // variable $data is served by app
+        $no = 1;
+        foreach ($data['data'] as $pemasukan) {
+        $periode = match ($pemasukan['type']) {
+            'YEAR' => $listBulan[$pemasukan['periode'] - 1],
+            'MONTH' => $listBulan[$pemasukan['periode'] - 1] . ' ' . $data['query']['tahun'],
+            'DATE' => tanggal($pemasukan['periode'])
+        };
+        ?>
         <tr>
             <td style="text-align: center"><?php echo $no++; ?></td>
-            <td style="text-align: center"><?php echo $listBulan[$d['periode'] - 1]; // periode start with 1, but $listBulan index start with 0 ?></td>
-            <td style="text-align: center">Rp <?php echo rupiah($d['total']); ?></td>
+            <td style="text-align: center"><?php echo $listBulan[$pemasukan['periode'] - 1]; // periode start with 1, but $listBulan index start with 0 ?></td>
+            <td style="text-align: center">Rp <?php echo rupiah($pemasukan['total']); ?></td>
+        </tr>
+    <?php }
+    } else {
+    $type = 'DATE';
+    if ($data['query']['tanggal'] == 0) {
+        $type = 'MONTH';
+    }
+
+    if($data['query']['bulan'] == 0) {
+        $type = 'YEAR';
+    }
+
+    $periode = match ($type) {
+        'YEAR' => $listBulan[$data['query']['bulan'] - 1],
+        'MONTH' => $listBulan[$data['query']['bulan'] - 1] . ' ' . $data['query']['tahun'],
+        'DATE' => tanggal(
+            date_create(sprintf("%s-%s-%s", $data['query']['tahun'], $data['query']['bulan'], $data['query']['tanggal']))
+        )
+    };
+
+    ?>
+        <tr>
+            <td colspan="2" style="text-align: center"><?= $periode ?></td>
+            <td style="text-align: center">Rp 0</td>
         </tr>
     <?php } ?>
     <tr>
