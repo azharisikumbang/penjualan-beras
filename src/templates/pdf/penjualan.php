@@ -1,7 +1,7 @@
 <table style="width: 100%; margin-bottom: 20px" border="0">
     <tr>
         <td style="width: 120px;">Perihal</td>
-        <td>: <strong>LAPORAN PENJUALAN BUMDES</strong></td>
+        <td>: <strong>LAPORAN PENJUALAN</strong></td>
     </tr>
     <tr>
         <td>Tanggal Akses</td>
