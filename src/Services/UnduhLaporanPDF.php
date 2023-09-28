@@ -21,6 +21,21 @@ class UnduhLaporanPDF
         );
     }
 
+    public function unduhLaporanPenjualan(array $data) : void
+    {
+        $headerPage = 'pdf/components/header';
+        $contentPage = 'pdf/penjualan';
+        $footerPage = 'pdf/components/footer';
+
+        $this->download(
+            $contentPage,
+            'BUMDES KANTERLEANS - Laporan Penjualan.pdf',
+            $data,
+            $headerPage,
+            $footerPage
+        );
+    }
+
     private function download(
         string $page,
         string $title,
