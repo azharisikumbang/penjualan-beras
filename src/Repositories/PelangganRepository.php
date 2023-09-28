@@ -84,4 +84,20 @@ class PelangganRepository extends BaseRepository
 
         return $this->basicSave($entity, $attributes);
     }
+
+    public function findByNama(string $nama, int $length = 10, int $start = 0, string $order = 'id', string $by = 'DESC'): array
+    {
+        $query = "SELECT p.*, a.username as akun_username, a.password as akun_password, a.role as akun_role 
+            FROM {$this->getTable()} p JOIN akun a on p.akun_id = a.id
+            WHERE p.nama LIKE :nama
+            ORDER BY {$order} {$by} LIMIT {$start}, {$length}";;
+
+        $stmt = $this->getDatabaseConnection()->prepare($query);
+        $stmt->execute(['nama' => '%' . $nama . '%']);
+
+        $result = [];
+        while($row = $stmt->fetch(PDO::FETCH_ASSOC)) $result[] = $this->toEntity($row);
+
+        return $result;
+    }
 }

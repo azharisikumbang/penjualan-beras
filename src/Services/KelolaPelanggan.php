@@ -15,7 +15,16 @@ class KelolaPelanggan
 
     public function listPelanggan(int $total = 10, int $start = 0): array
     {
+        $start = ($total * $start) - $total;
+
         return $this->pelangganRepository->get($total, $start, 'nama', 'ASC');
+    }
+
+    public function cariBerdasarkanNamaPelanggan(string $nama, int $total = 10, int $start = 0): array
+    {
+        $start = ($total * $start) - $total;
+
+        return $this->pelangganRepository->findByNama($nama, $total, $start);
     }
 
     public function cariBerdasarkanAkun(Akun $akun) : ?Pelanggan

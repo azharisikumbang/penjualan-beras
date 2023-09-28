@@ -21,8 +21,8 @@ $route = strtolower(get_current_route());
                 <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">BUMDUS Kanterleans</span>
             </a>
             <div class="flex items-center">
-                <span class="mr-6 text-sm  text-gray-500 italic">login sebagai <?= $akun->getUsername() ?></span>
-                <a href="<?= site_url('logout') ?>" class="text-sm text-white bg-gray-500 rounded px-4 py-1 hover:bg-orange-500">Log out</a>
+                <span class="mr-6 text-sm  text-gray-500 italic">masuk sebagai <?= $akun->getUsername() ?></span>
+                <a href="<?= site_url('logout') ?>" class="text-sm text-white bg-gray-500 rounded px-4 py-1 hover:bg-orange-500">Keluar</a>
             </div>
         </div>
     </nav>
@@ -59,7 +59,9 @@ $route = strtolower(get_current_route());
         </div>
     </div>
     <footer class="text-center text-gray-400 my-8">
-        &copy; <?= date('Y') ?> - BUMDUS Kanterleans Padang Panjang<br>
+        &copy; <?= date('Y') ?> - BUMDUS Kanterleans<br>
+        Alamat: Desa Kanang, Nagari Guguak Malalo, Kecamatan Batipuh Selatan, Kabupaten
+        Tanah Datar, Sumatera Barat<br>
         Kontak Person: 0812 1345 1544 (Amel)
     </footer>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
