@@ -82,7 +82,7 @@ $listStokBeras = app()->getManager()->getService('KelolaStok')->listStokBeras(10
                                     </td>
                                     <td class="p-4 whitespace-nowrap text-center">
                                         <p class="text-base text-gray-600">
-                                            <span class="" x-text="addDotToNumber(item.jumlah_stok)"></span>
+                                            <span class="" x-text="addDotToNumber(item.jumlah_stok)"></span> karung
                                         </p>
                                     </td>
                                     <td class="p-4 whitespace-nowrap">

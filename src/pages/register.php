@@ -10,7 +10,7 @@
                     <div class="mb-8">
                         <h2 class="block antialiased tracking-normal font-sans text-4xl font-bold leading-relaxed text-gray-600 ">Silahkan Bergabung !</h2>
                         <p class="font-sans text-gray-600">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                            Selamat datang di panel penjualan beras Badan Usaha Milik Dusun (BUMDUS) Kanterleans Desa Kanang Nagari Guguak Malalo. Silahkan daftarkan akun anda.
                         </p>
                     </div>
                     <div>
@@ -32,15 +32,15 @@
                         <strong class="text-gray-600">Informasi Akun</strong>
                     </div>
                     <div class="w-full mb-4">
-                        <label for="" class="font-sans text-base text-gray-600 mb-2 block">Username</label>
+                        <label for="" class="font-sans text-base text-gray-600 mb-2 block">Nama Pengguna</label>
                         <input name="username" type="text" class="w-full bg-white text-gray-700 font-sans font-normal outline outline-0 border-2 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-400" autofocus>
                     </div>
                     <div class="w-full mb-4">
-                        <label for="" class="font-sans text-base text-gray-600 mb-2 block">Password</label>
+                        <label for="" class="font-sans text-base text-gray-600 mb-2 block">Kata Sandi</label>
                         <input name="password" type="password" class="w-full bg-white text-gray-700 font-sans font-normal outline outline-0 border-2 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-400">
                     </div>
                     <div class="w-full mb-4">
-                        <label for="" class="font-sans text-base text-gray-600 mb-2 block">Ketik ulang password</label>
+                        <label for="" class="font-sans text-base text-gray-600 mb-2 block">Ketik ulang kata sandi</label>
                         <input name="confirm_password" type="password" class="w-full bg-white text-gray-700 font-sans font-normal outline outline-0 border-2 text-sm px-3 py-3 rounded-md border-gray-200 focus:border-gray-400">
                     </div>
                     <div class="w-full mt-8 flex justify-end">

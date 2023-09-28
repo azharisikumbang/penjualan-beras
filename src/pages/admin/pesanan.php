@@ -52,9 +52,9 @@ $listFilterKonfirmasiPembayaran = KonfirmasiPembayaran::toArray();
                     <div class="flex items-center">
                         <span class="mr-2">Pencarian: </span>
                         <form action="" method="GET" class="flex flex-row justify-start items-center">
-                            <div class="flex justify-start w-72 text-sm">
-                                <input value="<?= $search ?? '' ?>" type="text" name="search" class="text-sm bg-gray-50 border rounded-lg border-gray-300 text-gray-900 p-2" placeholder="Ketik nomor pesanan...">
-                                <button type="submit" class="ml-1 text-sm bg-blue-700 border rounded-lg border-blue-700 text-white px-2 py-1 cursor-pointer hover:bg-blue-800 hover:border-blue-800 ">
+                            <div class="flex justify-start w-96 text-sm">
+                                <input value="<?= $search ?? '' ?>" type="text" name="search" class="w-full text-sm bg-gray-50 border rounded-lg border-gray-300 text-gray-900 p-2" placeholder="Ketik nomor pesanan...">
+                                <button type="submit" class="ml-1 text-sm bg-blue-700 border rounded-lg border-blue-700 text-white px-4 py-1 cursor-pointer hover:bg-blue-800 hover:border-blue-800 ">
                                     Cari
                                 </button>
                             </div>

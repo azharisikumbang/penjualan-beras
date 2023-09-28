@@ -2,8 +2,6 @@
 
 if (session()->auth()) response()->redirectTo(site_url(session()->auth()->getRole()->redirectPage()));
 
-//html_require_component('navbar');
-
 ?>
 <main class="bg-gray-100 min-h-screen">
     <div class="mx-w-screen mx-auto p-12">
@@ -16,7 +14,7 @@ if (session()->auth()) response()->redirectTo(site_url(session()->auth()->getRol
                     <div class="mb-8">
                         <h2 class="block antialiased tracking-normal font-sans text-4xl font-bold leading-relaxed text-gray-600 ">Selamat Datang</h2>
                         <p class="font-sans text-gray-600">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                            Selamat datang di panel penjualan beras Badan Usaha Milik Dusun (BUMDUS) Kanterleans Desa Kanang Nagari Guguak Malalo. Silahkan masukkan akun anda.
                         </p>
                     </div>
                     <div class="w-full mb-4">
