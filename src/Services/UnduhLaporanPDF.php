@@ -36,6 +36,21 @@ class UnduhLaporanPDF
         );
     }
 
+    public function unduhLaporanStok(array $data): void
+    {
+        $headerPage = 'pdf/components/header';
+        $contentPage = 'pdf/stok';
+        $footerPage = 'pdf/components/footer';
+
+        $this->download(
+            $contentPage,
+            'BUMDES KANTERLEANS - Laporan Stok.pdf',
+            $data,
+            $headerPage,
+            $footerPage
+        );
+    }
+
     private function download(
         string $page,
         string $title,
