@@ -40,7 +40,7 @@ class PelangganRepository extends BaseRepository
     {
         $query = "SELECT p.*, a.username as akun_username, a.password as akun_password, a.role as akun_role 
             FROM {$this->getTable()} p JOIN akun a on p.akun_id = a.id
-            ORDER BY {$order} {$by} LIMIT {$start}, {$length}";;
+            ORDER BY {$order} {$by} LIMIT {$start}, {$length}";
 
         $stmt = $this->getDatabaseConnection()->prepare($query);
         $stmt->execute();

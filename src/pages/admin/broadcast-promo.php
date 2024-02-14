@@ -2,7 +2,7 @@
 
 if (false === session()->isAuthenticatedAs('admin')) html_unauthorized();
 
-$listPelanggan = app()->getManager()->getService('KelolaPelanggan')->listPelanggan(500);
+$listPelanggan = app()->getManager()->getService('KelolaPelanggan')->listPelanggan(20);
 $listPromo = app()->getManager()->getService('KelolaPromo')->listPromoBukanKadaluarsa();
 
 ?>

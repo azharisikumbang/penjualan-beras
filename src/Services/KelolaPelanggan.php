@@ -15,7 +15,7 @@ class KelolaPelanggan
 
     public function listPelanggan(int $total = 10, int $start = 0): array
     {
-        $start = ($total * $start) - $total;
+        // $start = ($total * $start) - $start;
 
         return $this->pelangganRepository->get($total, $start, 'nama', 'ASC');
     }
