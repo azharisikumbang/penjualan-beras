@@ -12,7 +12,7 @@
     <tr style="text-align: center; font-weight: bold">
         <td style="width: 5%">NO</td>
         <td style="text-align: center; width: 25%">JENIS BERAS</td>
-        <td>TAKARAN</td>
+        <td>TAKARAN (Kg)</td>
         <td>STOK TERSEDIA</td>
         <td style="width: 30%;">HARGA JUAL (Rupiah)</td>
     </tr>
@@ -27,7 +27,7 @@
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $item['relations']['beras']['jenis'] ?></td>
-                    <td style="text-align: center"><?= (strtoupper($item['relations']['takaran']['variant'])) ?></td>
+                    <td style="text-align: center"><?= trim(str_replace("KG", "", strtoupper($item['relations']['takaran']['variant']))) ?></td>
                     <td style="text-align: center"><?= rupiah($item['jumlah_stok']) ?></td>
                     <td style="text-align: center">Rp <?= rupiah($item['harga']) ?></td>
                 </tr>
