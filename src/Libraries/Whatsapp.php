@@ -4,7 +4,7 @@ class Whatsapp
 {
     const BASE_URL = "https://graph.facebook.com";
 
-    const VERSION = "v17.0";
+    const VERSION = "v18.0";
 
     const PATH = "messages";
 

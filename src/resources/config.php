@@ -18,8 +18,8 @@ return [
         'bukti_pembayaran' => __DIR__ . '/../storages/bukti-pembayaran/'
     ],
     'whatsapp'=> [
-        'token' => 'EAASxysSBPZAQBO2iqNqD7jzZAZCh0gdZCnc0cdxbZBZCei4wr7epAp2JedFgZCazGdUsFiZA3iaX1AZB6IlKZBKXBQqDwx5HApFhnpQ4qVIVTwDbeMNapZCpexZBJapLwISMRvamJZCBusMvcpZBxQegdmZBo3erJrnTtUogbwseJPMi76bfEGGq3EX67NAjSOCM4lMwaMwD0qgSo9TyZBwZC5AURBH93PEst6OlXMEhnPbUZD', // untuk uji coba berganti setiap 24 jam
-        'sender_number' => '107920529067316', // whatsapp test phone number (ganti dengan nomor telepon seharusnya)
+        'token' => 'EAAD8ipWTn4oBO17ZCodD8Kh3x49JRIIB1ZAwLPvRpboUB7uZBTtiymyrKU0teJVrQWCHsDRnR1YssqF1NFyxLF8wOKYleW6AGF0tPLsVot5TDHILgFn2X5Iu9DystMsz30lWextx33VZCOQLqwIEINCfRTUkdvPqYp7jDJfdDcRdPg1XKdrFfkowhWWMB7HCFvuBsrSYmcQ52YANBJsZD', // untuk uji coba berganti setiap 24 jam
+        'sender_number' => '256438874210069', // whatsapp test phone number (ganti dengan nomor telepon seharusnya)
         'template' => 'promosi_kupon'
     ],
     'pdf' => [
