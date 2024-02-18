@@ -24,7 +24,7 @@ return [
     ],
     'pdf' => [
         'ttd_nama' => 'Suhermen',
-        'jabatan' => 'Pimpinan Bumdes',
+        'jabatan' => 'Pimpinan Bumdus',
         'ttd_kota' => 'Tanah Datar'
     ]
 ];

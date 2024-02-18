@@ -27,7 +27,7 @@
                 <tr>
                     <td><?= $no++ ?></td>
                     <td><?= $item['relations']['beras']['jenis'] ?></td>
-                    <td style="text-align: center"><?= strtoupper($item['relations']['takaran']['variant']) ?></td>
+                    <td style="text-align: center"><?= (strtoupper($item['relations']['takaran']['variant'])) ?></td>
                     <td style="text-align: center"><?= rupiah($item['jumlah_stok']) ?></td>
                     <td style="text-align: center">Rp <?= rupiah($item['harga']) ?></td>
                 </tr>

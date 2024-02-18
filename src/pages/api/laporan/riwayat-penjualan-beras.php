@@ -1,7 +1,8 @@
 <?php
 
 if (
-    false === session()->isAuthenticatedAs('pimpinan') ||
+    is_null(session()->auth()) ||
+    false === in_array(session()->auth()->getRole(), [Role::PIMPINAN, Role::ADMIN]) ||
     request()->notGetRequest()
 ) response()->notFound();
 
