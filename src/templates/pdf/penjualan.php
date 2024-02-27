@@ -1,22 +1,4 @@
-<table style="width: 100%; margin-bottom: 20px" border="0">
-    <tr>
-        <td style="width: 120px;">Perihal</td>
-        <td>: <strong>LAPORAN PENJUALAN</strong></td>
-    </tr>
-    <tr>
-        <td>Tanggal Akses</td>
-        <td>: <?= tanggal(date_create(), false, true) ?> WIB</td>
-    </tr>
-</table>
-<table border="1" style="border-collapse: collapse; width: 100%" cellpadding="4">
-    <tr style="text-align: center; font-weight: bold">
-        <td style="width:20%">PERIODE</td>
-        <td>JENIS BERAS</td>
-        <td>TAKARAN</td>
-        <td style="width: 30%;">TERJUAL (Karung)</td>
-    </tr>
-    <?php
-
+<?php
     $listBulan = [
         'Januari',
         'Februari',
@@ -32,6 +14,35 @@
         'Desember'
     ];
 
+    // $tanggal = isset($_GET['tanggal']) && $_GET['tanggal'] >= 1 ? $_GET['tanggal'] : "";
+    // $bulan = isset($_GET['bulan']) && $_GET['bulan'] >= 1 ? $listBulan[$_GET['bulan'] - 1] : "";
+
+    // $periode = trim(sprintf("%s %s %s", $tanggal, $bulan, $_GET['tahun']));
+
+    $periode = isset($_GET['tahun']) ? $_GET['tahun'] : "-";
+?>
+<table style="width: 100%; margin-bottom: 20px" border="0">
+    <tr>
+        <td style="width: 120px;">Perihal</td>
+        <td>: <strong>LAPORAN PENJUALAN</strong></td>
+    </tr>
+    <tr>
+        <td>Periode</td>
+        <td>: <?= $periode ?></td>
+    </tr>
+    <tr>
+        <td>Tanggal Akses</td>
+        <td>: <?= tanggal(date_create(), false, true) ?> WIB</td>
+    </tr>
+</table>
+<table border="1" style="border-collapse: collapse; width: 100%" cellpadding="4">
+    <tr style="text-align: center; font-weight: bold">
+        <td style="width:20%">PERIODE</td>
+        <td>JENIS BERAS</td>
+        <td>TAKARAN</td>
+        <td style="width: 30%;">TERJUAL (Karung)</td>
+    </tr>
+    <?php
 
     /** @var $data array */
     if ($data['data']) {

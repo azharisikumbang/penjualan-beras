@@ -1,7 +1,33 @@
+<?php
+    $listBulan = [
+        'Januari',
+        'Februari',
+        'Maret',
+        'April',
+        'Mei',
+        'Juni',
+        'Juli',
+        'Agustus',
+        'September',
+        'Oktober',
+        'November',
+        'Desember'
+    ];
+
+    // $tanggal = isset($_GET['tanggal']) && $_GET['tanggal'] >= 1 ? $_GET['tanggal'] : "";
+    // $bulan = isset($_GET['bulan']) && $_GET['bulan'] >= 1 ? $listBulan[$_GET['bulan'] - 1] : "";
+
+    // $periode = trim(sprintf("%s %s %s", $tanggal, $bulan, $_GET['tahun']));
+    $periode = isset($_GET['tahun']) ? $_GET['tahun'] : "-";
+?>
 <table style="width: 100%; margin-bottom: 20px" border="0">
     <tr>
         <td style="width: 120px;">Perihal</td>
         <td>: <strong>LAPORAN PEMASUKAN BUMDES</strong></td>
+    </tr>
+    <tr>
+        <td>Periode</td>
+        <td>: <?= $periode ?></td>
     </tr>
     <tr>
         <td>Tanggal Akses</td>
@@ -45,7 +71,7 @@
         ?>
         <tr>
             <td style="text-align: center"><?php echo $no++; ?></td>
-            <td style="text-align: center"><?php echo $listBulan[$pemasukan['periode'] - 1]; // periode start with 1, but $listBulan index start with 0 ?></td>
+            <td style="text-align: center"><?php echo $periode; // periode start with 1, but $listBulan index start with 0 ?></td>
             <td style="text-align: center">Rp <?php echo rupiah($pemasukan['total']); ?></td>
         </tr>
     <?php }
