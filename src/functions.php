@@ -89,8 +89,10 @@ if (!function_exists('request')) {
 }
 
 if (!function_exists('tanggal')) {
-    function tanggal(DateTimeInterface $date, bool $month = true, bool $full = false)
+    function tanggal(DateTimeInterface|string $date, bool $month = true, bool $full = false)
     {
+        $date = is_string($date) ? date_create($date) : $date;
+
         $format = $full ? "d/m/Y H:i:s" : "Y/m/d";
         $today = $date->format($format);
         if ($month) {
