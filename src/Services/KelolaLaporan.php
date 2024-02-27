@@ -7,6 +7,7 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 require_once __DIR__ . '/../Repositories/StokRepository.php';
 require_once __DIR__ . '/../Repositories/PesananRepository.php';
 require_once __DIR__ . '/../Repositories/PelangganRepository.php';
+require_once __DIR__ . '/../Repositories/BerasRepository.php';
 
 class KelolaLaporan
 {
@@ -301,6 +302,54 @@ class KelolaLaporan
                 'tanggal' => $tanggal
             ],
             'data' => array_values($result)
+        ];
+    }
+
+    public function laporanPenjualanBerasPerPeriodeBerdasarkanJenisBeras($jenis_beras, $tahun, $bulan, $tanggal)
+    {
+        $transaksiRepository = new TransaksiRepository();
+        $stokRepository = new StokRepository();
+        $berasRepository = new BerasRepository();
+
+        $listBeras = $stokRepository->get(100);
+        $data = $transaksiRepository->getDataForLaporanPenjualanByJenisBeras($jenis_beras, $tahun, $bulan, $tanggal);
+
+        // pisah penjualan berdasarkan jenis dan takaran beras
+        $temp = [];
+        foreach ($listBeras as $beras) {
+            foreach ($data as $d) {
+                /** @var Stok $beras */
+                if ($beras->getBerasId() == $d['b_beras_id'] && $beras->getTakaranId() == $d['vt_variant_id']) {
+                    $temp[$d['periode']][] = $d;
+                }
+            }
+        }
+
+        $result = $temp;
+        if ($bulan < 1) {
+            $result = [];
+            for ($i = 1; $i <= 12; $i++) {
+                $result[$i] = $temp[$i] ?? [[
+                    'type' => 'YEAR',
+                    'periode' => $i,
+                    'terjual' => 0,
+                    'jenis' => 'Tidak Ada.',
+                    'variant' => 'Tidak Ada.'
+                ]];
+            }
+        }
+
+        return [
+            'query' => [
+                'tahun' => $tahun,
+                'bulan' => $bulan,
+                'tanggal' => $tanggal,
+                'jenis_beras' => $jenis_beras
+            ],
+            'data' => array_values($result),
+            'related' => [
+                'beras' => $jenis_beras > 0 ? $berasRepository->findById($jenis_beras)->toArray() : null
+            ]
         ];
     }
 }

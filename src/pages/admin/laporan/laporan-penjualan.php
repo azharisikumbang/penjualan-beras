@@ -40,29 +40,50 @@ $listBulan = [
         <div class="grid grid-cols-4 gap-4">
             <div class="col-span-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
                 <div class="mb-4">
-                    <form @submit.prevent="loadData" class="flex flex-row gap-4 justify-end items-center">
-                        <div class="font-medium text-gray-900">Periode Laporan:</div>
-                        <div class="flex flex-row gap-4">
-                            <div>
-                                <select x-model="properties.form.tahun" class="cursor-pointer shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none p-2.5 w-full">
-                                    <?php for ($i = date('Y'); $i >= 2023; $i--) { ?>
-                                        <option value="<?= $i ?>">Tahun <?= $i ?></option>
-                                    <?php } ?>
-                                </select>
+                    <form @submit.prevent="loadData" class="flex flex-row gap-4 items-center justify-end">
+                    <div class="">
+                            <div class="font-medium text-gray-900 mr-2">Jenis Beras:</div>
+                            <div class="flex flex-row gap-4">
+                                <div>
+                                    <select x-model="properties.form.jenis_beras" class="cursor-pointer shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none p-2.5 w-full">
+                                        <option value="0">-- Semua Jenis Beras --</option>
+                                        <?php 
+                                            $berasID = 0; // TODO: untuk skip duplikait (sementara) sebelum get data beras langsung dari database 
+                                            foreach ($listStokBeras as $beras) { 
+                                                if ($beras['beras_id'] == $berasID) continue; 
+                                                $berasID = $beras['beras_id']; 
+                                            ?>
+                                            <option value="<?= $beras['beras_id'] ?>"><?= $beras['relations']['beras']['jenis'] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
                             </div>
-                            <div>
-                                <select @change="gantiBulanLaporan" x-model="properties.form.bulan" class="cursor-pointer shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none p-2.5 w-full">
-                                    <option value="0">-- Semua Bulan --</option>
-                                    <?php for ($i = 1; $i <= 12; $i++) { ?>
-                                        <option value="<?= $i ?>"><?= $listBulan[$i - 1] ?></option>
-                                    <?php } ?>
-                                </select>
-                            </div>
-                            <div>
-                                <input type="number" x-model="properties.form.tanggal" class="block w-32 cursor-pointer shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none p-2.5" max="31" min="0" placeholder="*Ketik Tanggal..">
+                        </div>
+                        <div class="">
+                            <div class="font-medium text-gray-900 mr-2">Periode Laporan:</div>
+                            <div class="flex flex-row gap-4">
+                                <div>
+                                    <select x-model="properties.form.tahun" class="cursor-pointer shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none p-2.5 w-full">
+                                        <?php for ($i = date('Y'); $i >= 2023; $i--) { ?>
+                                            <option value="<?= $i ?>">Tahun <?= $i ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div>
+                                    <select @change="gantiBulanLaporan" x-model="properties.form.bulan" class="cursor-pointer shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none p-2.5 w-full">
+                                        <option value="0">-- Semua Bulan --</option>
+                                        <?php for ($i = 1; $i <= 12; $i++) { ?>
+                                            <option value="<?= $i ?>"><?= $listBulan[$i - 1] ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div>
+                                    <input type="number" x-model="properties.form.tanggal" class="block w-32 cursor-pointer shadow-sm bg-gray-50 border-2 border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:border-gray-500 outline-none p-2.5" max="31" min="0" placeholder="*Ketik Tanggal..">
+                                </div>
                             </div>
                         </div>
                         <div class="w-1/4">
+                            <div>&nbsp;</div>
                             <button class="inline-flex w-full items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-3 text-center" type="submit">
                                 <svg class="w-5 h-5 mr-2 text-white" viewBox="0 0 20 20">
                                     <path fill="currentColor" d="M19.305,9.61c-0.235-0.235-0.615-0.235-0.85,0l-1.339,1.339c0.045-0.311,0.073-0.626,0.073-0.949
@@ -151,7 +172,8 @@ $listBulan = [
                 this.getApiRequest('/api/laporan/riwayat-penjualan-beras', {
                     'tahun' : this.properties.form.tahun,
                     'bulan': this.properties.form.bulan,
-                    'tanggal': this.properties.form.tanggal
+                    'tanggal': this.properties.form.tanggal,
+                    'jenis_beras': this.properties.form.jenis_beras
                 }, response => {
                     if (response.data.data.data.length < 1) {
                         let temp = {
@@ -271,7 +293,8 @@ $listBulan = [
                     "form": {
                         "tahun": 0,
                         "bulan": 0,
-                        "tanggal": 0
+                        "tanggal": 0,
+                        "jenis_beras": 0
                     }
                 },
                 "init": function() {

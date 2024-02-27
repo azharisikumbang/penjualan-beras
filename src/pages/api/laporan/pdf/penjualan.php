@@ -21,7 +21,7 @@ if ($tahun > date('Y') || $bulan > 12 || $tanggal > 31) {
 
 /** @var $kelolaLaporan KelolaLaporan */
 $kelolaLaporan = app()->getManager()->getService('KelolaLaporan');
-$laporan = $kelolaLaporan->laporanPenjualanBerasPerPeriode($tahun, $bulan, $tanggal);
+$laporan = $kelolaLaporan->laporanPenjualanBerasPerPeriodeBerdasarkanJenisBeras($_GET['jenis_beras'] ?? 0, $tahun, $bulan, $tanggal);
 
 /** @var $pdf UnduhLaporanPDF */
 $pdf = app()->getManager()->getService('UnduhLaporanPDF');

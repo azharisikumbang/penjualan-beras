@@ -20,6 +20,7 @@
     // $periode = trim(sprintf("%s %s %s", $tanggal, $bulan, $_GET['tahun']));
 
     $periode = isset($_GET['tahun']) ? $_GET['tahun'] : "-";
+
 ?>
 <table style="width: 100%; margin-bottom: 20px" border="0">
     <tr>
@@ -33,6 +34,10 @@
     <tr>
         <td>Tanggal Akses</td>
         <td>: <?= tanggal(date_create(), false, true) ?> WIB</td>
+    </tr>
+    <tr>
+        <td>Kategori</td>
+        <td>: <?= ($data['related']['beras'] != null) ? $data['related']['beras']['jenis'] : 'Semua Kategori Beras' ?></td>
     </tr>
 </table>
 <table border="1" style="border-collapse: collapse; width: 100%" cellpadding="4">
