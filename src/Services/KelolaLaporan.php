@@ -313,17 +313,23 @@ class KelolaLaporan
 
         $listBeras = $stokRepository->get(100);
         $data = $transaksiRepository->getDataForLaporanPenjualanByJenisBeras($jenis_beras, $tahun, $bulan, $tanggal);
-
+        
         // pisah penjualan berdasarkan jenis dan takaran beras
         $temp = [];
+        $isDaily = false;
         foreach ($listBeras as $beras) {
             foreach ($data as $d) {
+                if (false === $isDaily && $d['type'] == 'DAILY') $isDaily = true;
+
                 /** @var Stok $beras */
                 if ($beras->getBerasId() == $d['b_beras_id'] && $beras->getTakaranId() == $d['vt_variant_id']) {
                     $temp[$d['periode']][] = $d;
                 }
             }
         }
+
+        // sort data from date 1 to higher
+        if ($isDaily) ksort($temp);
 
         $result = $temp;
         if ($bulan < 1) {

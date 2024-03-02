@@ -216,6 +216,14 @@ $listBulan = [
                         `${query.tahun}-${query.bulan}-${query.tanggal}`
                     );
                 }
+
+                if (item.type === 'DAILY') {
+                    let query = this.properties.data.laporan.query;
+
+                    return this.tanggalToIndo(
+                        `${item.periode}`
+                    );
+                }
             },
             "parseAsMonth": function (month) {
                 let date = new Date();

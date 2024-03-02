@@ -126,9 +126,9 @@ class TransaksiRepository extends BaseRepository
         $queryBeras = "";
 
         if ($month > 0) {
-            $type = 'MONTH';
+            $type = 'DAILY';
             $where = sprintf("YEAR(tanggal_pembayaran) = '%s' AND MONTH(tanggal_pembayaran) = '%s'", $year, $month);
-            $group = "MONTH(tanggal_pembayaran)";
+            $group = "DATE(tanggal_pembayaran)";
         }
 
         if ($date > 0) {

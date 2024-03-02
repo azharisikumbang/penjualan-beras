@@ -14,12 +14,12 @@
         'Desember'
     ];
 
-    // $tanggal = isset($_GET['tanggal']) && $_GET['tanggal'] >= 1 ? $_GET['tanggal'] : "";
-    // $bulan = isset($_GET['bulan']) && $_GET['bulan'] >= 1 ? $listBulan[$_GET['bulan'] - 1] : "";
+    $tanggal = isset($_GET['tanggal']) && $_GET['tanggal'] >= 1 ? $_GET['tanggal'] : "";
+    $bulan = isset($_GET['bulan']) && $_GET['bulan'] >= 1 ? $listBulan[$_GET['bulan'] - 1] : "";
 
-    // $periode = trim(sprintf("%s %s %s", $tanggal, $bulan, $_GET['tahun']));
+    $periode = trim(sprintf("%s %s %s", $tanggal, $bulan, $_GET['tahun']));
 
-    $periode = isset($_GET['tahun']) ? $_GET['tahun'] : "-";
+    // $periode = isset($_GET['tahun']) ? $_GET['tahun'] : "-";
 
 ?>
 <table style="width: 100%; margin-bottom: 20px" border="0">
@@ -59,8 +59,7 @@
             foreach ($item as $penjualan) {
                 $periode = match ($penjualan['type']) {
                     'YEAR' => $listBulan[$penjualan['periode'] - 1],
-                    'MONTH' => $listBulan[$penjualan['periode'] - 1] . ' ' . date('Y'),
-                    'DATE' => tanggal($penjualan['periode'])
+                    'DATE', 'DAILY' => tanggal($penjualan['periode'])
                 };
             ?>
             <tr>
