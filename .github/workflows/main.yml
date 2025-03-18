@@ -13,4 +13,4 @@ jobs:
       with:
         server: ftp.azharisaputra.web.id
         username: ftp-penjualan-beras@toko-beras.azharisaputra.web.id
-        password: ${{ secrets.ftp_password }}
+        password: ${{ secrets.FTP_PASSWORD }}
