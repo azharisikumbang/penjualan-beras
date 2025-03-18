@@ -2,16 +2,16 @@
 
 return [
     'app' => [
-        'site_title' => 'BUMDUS KANTERLEANS',
+        'site_title' => 'NAMA_TOKO_BERAS',
         'base_dir' => __DIR__ . '/../../',
-        'site_url' => 'http://localhost/penjualan-beras/public/',
-        'base_url' => 'http://localhost/penjualan-beras',
+        'site_url' => 'SITE_URL',
+        'base_url' => 'SITE_URL',
     ],
     'database' => [
         'host' => 'localhost',
-        'username' => 'root',
-        'password' => 'root',
-        'database' => 'bumdes_kanterleans',
+        'username' => 'DB_USER',
+        'password' => 'DB_PASS',
+        'database' => 'DB_NAME',
         'port' => 3306
     ],
     'disk' => [
@@ -23,8 +23,8 @@ return [
         'template' => 'promosi_kupon'
     ],
     'pdf' => [
-        'ttd_nama' => 'Suhermen',
-        'jabatan' => 'Pimpinan Bumdus',
-        'ttd_kota' => 'Tanah Datar'
+        'ttd_nama' => 'NAMA_PIMPINAN',
+        'jabatan' => 'JABATAN',
+        'ttd_kota' => 'KOTA_KABUPATEN'
     ]
 ];

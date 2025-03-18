@@ -3,3 +3,4 @@
 /public/uploaded/bukti-pembayaran/
 /vendor/
 /node_modules/
+/src/resources/config.php
