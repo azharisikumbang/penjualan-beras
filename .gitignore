@@ -4,3 +4,4 @@
 /vendor/
 /node_modules/
 /src/resources/config.php
+/src/resources/database-full.sql
