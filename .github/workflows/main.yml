@@ -5,12 +5,22 @@ jobs:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
     steps:
+    - name: Setup PHP
+      id: setup-php
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+    - name: Print PHP version
+      run: echo ${{ steps.setup-php.outputs.php-version }}
     - name: 🚚 Get latest code
       uses: actions/checkout@v2
     
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@4.3.0
+    - name: Install dependencies
+      uses: "ramsey/composer-install@v3"
+
+    - name: PHP Code Sniffer
+      uses: php-actions/phpcs@v1
       with:
-        server: ftp.azharisaputra.web.id
-        username: ftp-penjualan-beras@toko-beras.azharisaputra.web.id
-        password: ${{ secrets.FTP_PASSWORD }}
+        php_version: 8.2
+        path: src/
+        standard: phpcs.xml
